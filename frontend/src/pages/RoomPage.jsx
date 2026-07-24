@@ -9,7 +9,7 @@ import useUpdateMessage from "@/hooks/room/useUpdateMessage";
 import useInitUsername from "@/hooks/room/useInitUsername";
 
 const RoomPage = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [loadingStage, setLoadingStage] = useState("connecting");
 
   const clientId = useMemo(() => {
     let id = localStorage.getItem("clientId");
@@ -22,15 +22,15 @@ const RoomPage = () => {
 
   useSocket();
   useInitUsername();
-  useUpdateRoom(setIsLoading, clientId);
-  useJoinRoom(clientId);
+  useJoinRoom(clientId, setLoadingStage);
+  useUpdateRoom(clientId, setLoadingStage);
   useUpdateMessage();
 
-  if (isLoading) return <Loading />;
   return (
     <div className="app-container">
-      <VideoContainer />
+      <VideoContainer setLoadingStage={setLoadingStage} />
       <Sidebar />
+      {loadingStage !== "ready" && <Loading stage={loadingStage} />}
     </div>
   );
 };

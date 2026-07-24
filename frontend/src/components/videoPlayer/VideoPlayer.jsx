@@ -5,12 +5,12 @@ import useVideoLoader from "@/hooks/youtube/useVideoLoader";
 import useYoutubePlayer from "@/hooks/youtube/useYoutubePlayer";
 import useRoom from "@/hooks/room/useRoom";
 
-export default function VideoPlayer() {
+export default function VideoPlayer({ setLoadingStage }) {
   const { isAdmin } = useRoom();
   const iframeId = "yt-player";
 
-  useYoutubePlayer();
-  useVideoLoader();
+  useYoutubePlayer(setLoadingStage);
+  useVideoLoader(setLoadingStage);
   useReportStatus();
   usePlaybackSync();
 

@@ -4,7 +4,7 @@ import Star from "../svg/Star";
 import Github from "../svg/Github";
 
 const ProjectInfo = () => {
-  const [stars, setStars] = useState(2);
+  const [stars, setStars] = useState(3);
   useEffect(() => {
     (async () => {
       const res = await fetch("https://api.github.com/repos/manish-850/ytsync");
