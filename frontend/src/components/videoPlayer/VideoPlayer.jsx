@@ -1,27 +1,23 @@
 import "./videoPlayer.css";
 import usePlaybackSync from "@/hooks/youtube/usePlaybackSync";
 import useReportStatus from "@/hooks/youtube/useReportStatus";
-// import usePlaybackControll from "@/hooks/youtube/usePlaybackControll";
 import useVideoLoader from "@/hooks/youtube/useVideoLoader";
 import useYoutubePlayer from "@/hooks/youtube/useYoutubePlayer";
-// import useRoom from "@/hooks/room/useRoom";
+import useRoom from "@/hooks/room/useRoom";
 
 export default function VideoPlayer() {
-  // const { isAdmin } = useRoom();
+  const { isAdmin } = useRoom();
   const iframeId = "yt-player";
 
   useYoutubePlayer();
-  // usePlaybackControll();
   useVideoLoader();
-  useReportStatus()
+  useReportStatus();
   usePlaybackSync();
 
   return (
-    <div
-      className="player-container"
-      // style={{ pointerEvents: isAdmin ? "auto" : "none" }}
-    >
+    <div className="player-container">
       <div id={iframeId}></div>
+      {!isAdmin && <div className="player-overlay"></div>}
     </div>
   );
 }
