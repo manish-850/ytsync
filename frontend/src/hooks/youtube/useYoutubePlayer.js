@@ -16,7 +16,7 @@ const useYoutubePlayer = (setLoadingStage) => {
     const interval = setInterval(() => {
       const player = playerRef?.current;
       if (!player) return () => clearInterval(interval);
-      const now = player.getCurrentTime();
+      const now = player?.getCurrentTime();
       const diff = now - lastTimeRef.current;
       if (Math.abs(diff) > 2)
         handlePlaybackControl(player.getPlayerState() === 1, now); // user jumped

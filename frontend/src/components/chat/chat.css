@@ -87,9 +87,10 @@
 
 .user-list {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.8rem;
   padding: 0.25rem 0;
+  min-height: 100%;
 }
 
 .user-badge.admin {
