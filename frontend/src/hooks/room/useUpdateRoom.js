@@ -2,7 +2,7 @@ import { getSocket } from "@/services/socket";
 import { useEffect } from "react";
 import useRoom from "./useRoom";
 import { useParams } from "react-router-dom";
-const useUpdateRoom = (setIsLoading, clientId) => {
+const useUpdateRoom = (clientId, setLoadingStage) => {
   const {
     roomDataRef,
     setUsername,
@@ -10,6 +10,7 @@ const useUpdateRoom = (setIsLoading, clientId) => {
     setIsAdmin,
     setIsJoined,
     setVideoId,
+    setUsers,
   } = useRoom();
   const { roomId } = useParams();
   useEffect(() => {
@@ -18,12 +19,16 @@ const useUpdateRoom = (setIsLoading, clientId) => {
       if (currentUser) {
         console.log("Room data : ", data);
         roomDataRef.current = data;
+        setUsers(data.users);
         setIsAdmin(currentUser?.isAdmin);
         setUsername(currentUser?.username);
-        setIsLoading(false);
         setIsJoined(true);
         setRoomId(data?.id);
         setVideoId(data?.currentVideoId);
+        setLoadingStage((prev) => {
+          if (prev === "ready") return prev;
+          return "player";
+        });
       }
     };
     const s = getSocket();

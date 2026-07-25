@@ -26,6 +26,7 @@ const Form = () => {
           label="Room Id"
         />
         <Button
+          className={"genrateBtn"}
           type="button"
           onClick={handleCreateRoom}
           variant="secondary"

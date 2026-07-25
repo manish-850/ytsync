@@ -127,9 +127,11 @@ io.on("connection", (socket) => {
           currentVideoId: room.currentVideoId,
         });
       }
-      // io.to(currentRoomId).emit("room-update", {
-      //   ...getRoomData(room),
-      // });
+      socket.emit("user-status-update", {
+        clientId: currentClientId,
+        drift,
+        isSynced,
+      });
     }
   });
 

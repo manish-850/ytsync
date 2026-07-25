@@ -1,26 +1,29 @@
-import { Shield } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import useRoom from "@/hooks/room/useRoom";
-
+import UserCard from "./UserCard";
+import { useEffect } from "react";
+import { socket } from "@/services/socket";
 const Users = () => {
-  const { roomDataRef } = useRoom();
+  const { users, setUsers } = useRoom();
+  useEffect(() => {
+    const handleStatus = (status) => {
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.clientId === status.clientId ? { ...user, status } : user,
+        ),
+      );
+    };
+
+    socket.on("user-status-update", handleStatus);
+
+    return () => {
+      socket.off("user-status-update", handleStatus);
+    };
+  }, []);
   return (
     <div className="user-list">
-      {roomDataRef.current?.users.map((user) => {
-        const isSynced = user.status?.isSynced ?? true;
-        return (
-          <Badge variant="secondary" key={user.id}>
-            <span
-              className="user"
-              style={{
-                backgroundColor: isSynced ? "#22c55e" : "#ef4444",
-              }}
-            />
-            {user.isAdmin && <Shield size={12} />}
-            {user.username}
-          </Badge>
-        );
-      })}
+      {users.map((user) => (
+        <UserCard user={user} key={user.id} />
+      ))}
     </div>
   );
 };

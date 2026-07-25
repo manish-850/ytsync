@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import useRoom from "../room/useRoom";
 import usePlayer from "../player/usePlayer";
 
-const useVideoLoader = () => {
+const useVideoLoader = (setLoadingStage) => {
   const { roomDataRef, videoId } = useRoom();
   const { playerRef } = usePlayer();
   useEffect(() => {
@@ -10,6 +10,7 @@ const useVideoLoader = () => {
     if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
       console.log("Loading video:", videoId);
       playerRef.current.loadVideoById({ videoId });
+      setLoadingStage("ready")
     }
   }, [videoId]);
 };

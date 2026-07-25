@@ -2,7 +2,7 @@ import { getSocket } from "@/services/socket";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-const useJoinRoom = (clientId) => {
+const useJoinRoom = (clientId, setLoadingStage) => {
   const { roomId } = useParams();
   useEffect(() => {
     const s = getSocket();
@@ -11,6 +11,7 @@ const useJoinRoom = (clientId) => {
       username: localStorage.getItem("username"),
       clientId,
     });
+    setLoadingStage("connecting");
   }, [roomId]);
 };
 

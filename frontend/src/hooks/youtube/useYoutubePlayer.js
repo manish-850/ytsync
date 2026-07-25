@@ -5,7 +5,7 @@ import { syncToTargetTime } from "@/utils/syncToTargetTime";
 import { handlePlaybackControl } from "@/utils/handlePlaybackControl";
 import { toast } from "sonner";
 
-const useYoutubePlayer = () => {
+const useYoutubePlayer = (setLoadingStage) => {
   const { playerRef, isMuted } = usePlayer();
   const { roomDataRef, isAdmin, videoId, roomId } = useRoom();
   const lastTimeRef = useRef(0);
@@ -16,7 +16,7 @@ const useYoutubePlayer = () => {
     const interval = setInterval(() => {
       const player = playerRef?.current;
       if (!player) return () => clearInterval(interval);
-      const now = player.getCurrentTime();
+      const now = player?.getCurrentTime();
       const diff = now - lastTimeRef.current;
       if (Math.abs(diff) > 2)
         handlePlaybackControl(player.getPlayerState() === 1, now); // user jumped
@@ -33,6 +33,7 @@ const useYoutubePlayer = () => {
     else player.unmute();
     if (roomData) {
       player.seekTo(roomData.currentTime, true);
+      setLoadingStage("ready");
       if (roomData.isPlaying) player.playVideo();
       else player.pauseVideo();
     }
@@ -54,6 +55,7 @@ const useYoutubePlayer = () => {
         onReady: (event) => {
           console.log("YT READY : ", event.data);
           playerRef.current = event.target;
+          setLoadingStage("syncing");
           toast.success("YT player ready");
           if (handlePlayerReady) handlePlayerReady();
           if (!isAdmin) syncToTargetTime(playerRef, roomDataRef);
@@ -68,8 +70,7 @@ const useYoutubePlayer = () => {
                 handlePlaybackControl(false, event.target.getCurrentTime());
               }
             }
-          } else if (event.data === 1)
-            syncToTargetTime(playerRef, roomDataRef);
+          } else if (event.data === 1) syncToTargetTime(playerRef, roomDataRef);
         },
       },
     });
