@@ -10,6 +10,7 @@ const useUpdateRoom = (clientId, setLoadingStage) => {
     setIsAdmin,
     setIsJoined,
     setVideoId,
+    setUsers,
   } = useRoom();
   const { roomId } = useParams();
   useEffect(() => {
@@ -18,6 +19,7 @@ const useUpdateRoom = (clientId, setLoadingStage) => {
       if (currentUser) {
         console.log("Room data : ", data);
         roomDataRef.current = data;
+        setUsers(data.users);
         setIsAdmin(currentUser?.isAdmin);
         setUsername(currentUser?.username);
         setIsJoined(true);

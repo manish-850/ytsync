@@ -4,7 +4,7 @@ const UserCard = ({ user }) => {
   const clientId = localStorage.getItem("clientId");
   const driftAbs = Math.abs(user.status?.drift ?? 0);
   const drift = user.status?.drift ?? 0;
-  const driftMs = Math.floor(drift * 1000);
+  const driftMs = Math.round(drift * 1000);
 
   let bgColor = "bg-green-500/20";
   let textColor = "text-green-500";
@@ -25,11 +25,11 @@ const UserCard = ({ user }) => {
       className={`user-card flex justify-between bg-zinc-800 h-12 w-full border  overflow-y-auto rounded-lg items-center px-2`}
       style={{ padding: "0 0.5rem" }}
     >
-      <div className="user-info flex items-center gap-2">
+      <div className="user-info flex items-center gap-1.5">
         <div className="flex h-8 w-8 items-center justify-center rounded-full border bg-lime-900">
           {user.username[0].toUpperCase()}
         </div>
-        <h6 style={{ fontWeight: "400" }}>{user.username}</h6>
+        <p>{user.username}</p>
       </div>
       <div className="badge flex gap-2">
         <Badge
