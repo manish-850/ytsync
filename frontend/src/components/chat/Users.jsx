@@ -20,7 +20,7 @@ const Users = () => {
     };
   }, []);
   return (
-    <div className="user-list">
+    <div className="user-list flex-1">
       {users.map((user) => (
         <UserCard user={user} key={user.id} />
       ))}

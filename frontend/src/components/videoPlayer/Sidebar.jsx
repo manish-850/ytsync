@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function Sidebar() {
   return (
     <>
-      <div className="sidebar">
+      <div className="sidebar w-full lg:w-[28%] h-[60%] lg:h-full rounded border-2">
         <Tabs defaultValue="chat" className="h-full">
           <TabsList className="w-full sidebar-tabslist">
             <TabsTrigger

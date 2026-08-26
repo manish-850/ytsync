@@ -27,7 +27,7 @@ const RoomPage = () => {
   useUpdateMessage();
 
   return (
-    <div className="app-container">
+    <div className="flex flex-col lg:flex-row gap-5 h-screen w-full justify-between">
       <VideoContainer setLoadingStage={setLoadingStage} />
       <Sidebar />
       {loadingStage !== "ready" && <Loading stage={loadingStage} />}
