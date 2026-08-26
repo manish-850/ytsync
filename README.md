@@ -1,12 +1,12 @@
-# ytsync
+# YTSync
 
-A real-time youtube sync application that lets multiple users to watch youtube videos together with synchronized playback and live chat.
+A real-time YouTube synchronization application that allows multiple users to watch videos together with synchronized playback and live chat.
 
-Built with **React**, **Express**, **Socket.IO**, and the **YouTube IFrame API**.
+Built with **React**, **Express**, **Socket.IO**, the **YouTube IFrame API**, and **YouTube.js**.
 
-> **Status:** Active Development
+> **Status :** Active Development
 
-> **Acknowledgement:** This project is fork of **yt-cowatch** by GitUtk.
+> **Acknowledgement :** This project is a fork of [yt-cowatch](https://github.com/GitUtk/yt-cowatch) by GitUtk.
 
 ---
 
@@ -19,6 +19,9 @@ Built with **React**, **Express**, **Socket.IO**, and the **YouTube IFrame API**
 - Create and join rooms instantly
 - Admin-controlled playback
 - Live room chat
+- Search YouTube videos directly from the application
+- Debounced search to reduce unnecessary API requests
+- Select videos without manually pasting YouTube URLs
 - Automatic room restoration after page refresh
 - Persistent user identity using `clientId`
 - Username persistence with Local Storage
@@ -35,17 +38,24 @@ Built with **React**, **Express**, **Socket.IO**, and the **YouTube IFrame API**
 
 - React
 - Vite
-- shadcn/ui
 - Tailwind CSS v4
+- shadcn/ui
 - Context API
 - Custom Hooks
 - Socket.IO Client
+- Axios
 
 ## Backend
 
 - Node.js
 - Express
 - Socket.IO
+- YouTube.js
+
+## APIs
+
+- YouTube IFrame API for video playback
+- YouTube.js / Innertube for searching YouTube videos
 
 ## Deployment
 
@@ -56,20 +66,29 @@ Built with **React**, **Express**, **Socket.IO**, and the **YouTube IFrame API**
 
 # Architecture
 
-```
-Admin
-   │
-   │ playback-control
-   ▼
-Server (Source of Truth)
-   │
-   ├── maintains room playback state
-   ├── calculates expected playback time
-   ├── detects playback drift
-   └── sends playback-sync when required
-            │
-            ▼
-Participants
+```text
+                         Admin
+                           │
+                           │ Playback Controls
+                           ▼
+                 ┌─────────────────────┐
+                 │       Server        │
+                 │   Source of Truth   │
+                 └──────────┬──────────┘
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+          ▼                 ▼                 ▼
+   Maintains Room     Calculates Expected   Detects Playback
+   Playback State     Playback Position         Drift
+                            │
+                            ▼
+                   Sends Synchronization
+                      When Required
+                            │
+                            ▼
+                       Participants
+
 ```
 
 The server is responsible for maintaining the authoritative playback state, while clients periodically report their playback status. Participants are only resynchronized when playback drift exceeds the allowed threshold, reducing unnecessary synchronization events.
@@ -78,9 +97,37 @@ The server is responsible for maintaining the authoritative playback state, whil
 
 ## Room Creation
 
-- Generate a unique room ID.
+- A unique room Id is generated.
 - The first participant automatically becomes the room admin.
+- Other users can join using the room Id.
 
+## YouTube Search
+Users can search for YouTube videos directly from the application instead of manually copying and pasting video URLs.
+```text
+            User types a search query
+                  │
+                  ▼
+            Debounced search
+                  │
+                  ▼
+            Backend API
+                  │
+                  ▼
+            YouTube.js / Innertube
+                  │
+                  ▼
+            YouTube search results
+                  │
+                  ▼
+            User selects a video
+                  │
+                  ▼
+            Video ID is sent to the room
+                  │
+                  ▼
+            All participants load the selected video
+
+```
 ## Synchronization
 
 ytsync uses a **server-authoritative synchronization model**.
@@ -108,25 +155,27 @@ After refreshing the page:
 # Project Structure
 
 ```text
-ytsync
-│
-├── frontend
-│   ├── src
-│   │   ├── components
-│   │   ├── context
-│   │   ├── hooks
-│   │   ├── pages
-│   │   ├── services
-│   │   ├── utils
-│   │   └── ui
-│   └── public
-│
-├── backend
-│   ├── server.js
-│   ├── rooms.js
-│   └── package.json
-│
-└── README.md
+            ytsync
+            │
+            ├── frontend
+            │   ├── src
+            │   │   ├── api
+            │   │   ├── components
+            │   │   ├── context
+            │   │   ├── hooks
+            │   │   ├── pages
+            │   │   ├── services
+            │   │   ├── utils
+            │   │   └── ui
+            │   │
+            │   └── public
+            │
+            ├── backend
+            │   ├── server.js
+            │   ├── rooms.js
+            │   └── package.json
+            │
+            └── README.md
 ```
 
 ---
@@ -143,6 +192,9 @@ ytsync
 - Server-authoritative synchronization algorithm
 - Playback drift detection and automatic correction
 - Improved synchronization under network latency
+- Direct YouTube video search
+- Debounced search requests
+- Video selection without manually pasting URLs
 - Reusable UI components with shadcn/ui
 - Better maintainability and scalability
 
@@ -172,38 +224,6 @@ cd backend
 npm install
 npm start
 ```
-
----
-
-# Current Progress
-
-- Room creation
-- Join room
-- Live chat
-- Play synchronization
-- Pause synchronization
-- Seek synchronization
-- Video change synchronization
-- Server-authoritative synchronization
-- Playback drift detection
-- Automatic playback correction
-- Automatic room restoration
-- Persistent user identity
-- Responsive UI
-- shadcn/ui integration
-
----
-
-# Roadmap
-
-- Playback buffering indicator
-- Video queue / playlist
-- Room permissions
-- Persistent chat history
-- Room expiration
-- Mobile UI improvements
-- Emoji reactions
-- Theme switching
 
 ---
 
