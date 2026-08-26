@@ -3,21 +3,19 @@ import { io } from "socket.io-client";
 export let socket = null;
 
 export function getSocket() {
-  if (!socket) {
-    socket = io(import.meta.env.VITE_BACKEND_URL);
-  }
+  if(socket) return socket;
+  socket = io(import.meta.env.VITE_BACKEND_URL);
   return socket;
 }
 
 export const initSocket = () => {
-  getSocket();
+  if (!socket) getSocket();
   socket.connect();
   return () => {
     socket.disconnect();
     socket = null;
   };
 };
-
 
 export const handleSendMessage = (text) => {
   if (!socket || !socket.connected) return;

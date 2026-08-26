@@ -1,51 +1,77 @@
-import { useState } from "react";
-import { Video } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { socket } from "../../services/socket";
-import useRoom from "@/hooks/room/useRoom";
+import VideoCard from "./VideoCard";
+import { fetchSearchResults } from "@/api/searchResult";
+import { debounce } from "@/utils/debounce";
 
 export default function RoomControls() {
-  const [videoUrl, setVideoUrl] = useState("");
-  const { setVideoId } = useRoom();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const containerRef = useRef(null);
 
-  const extractVideoId = (url) => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*$/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : url;
-  };
+  const debouncedSearch = useMemo(() => {
+    return debounce(async (searchQuery) => {
+      console.log("Debounced function fired:", searchQuery);
+      if (!searchQuery.trim()) {
+        setResults([]);
+        return;
+      }
 
-  const handleChangeVideo = (videoId) => {
-    if (socket) {
-      socket.emit("change-video", { videoId });
-    }
-  };
+      const results = await fetchSearchResults(searchQuery, setIsLoading);
 
-  const handleVideoSubmit = (e) => {
-    e.preventDefault();
-    if (!videoUrl.trim()) return;
-    const id = extractVideoId(videoUrl);
-    setVideoId(id);
-    if (id) {
-      handleChangeVideo(id);
-      setVideoUrl("");
-    }
-  };
+      setResults(results);
+    }, 500);
+  }, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [containerRef]);
 
   return (
-    <div className="load-video-container">
-      <form onSubmit={handleVideoSubmit} className="url-input-group">
+    <div ref={containerRef} className="load-video-container relative">
+      <form onSubmit={(e) => e.preventDefault()} className="url-input-group">
         <Input
+          className="search-input"
           type="text"
-          placeholder="Paste url or id"
-          value={videoUrl}
-          onChange={(e) => setVideoUrl(e.target.value)}
+          placeholder="Search youtube"
+          value={query}
+          onChange={(e) => {
+            const value = e.target.value;
+            setQuery(value);
+            debouncedSearch(value);
+          }}
+          onFocus={() => setIsOpen(true)}
         />
-        <Button type="submit" variant="default" size="icon">
-          <Video size={18} />
-        </Button>
       </form>
+      {isOpen && (
+        <div
+          style={{ padding: "5px" }}
+          className="search-result-container flex flex-col items-center gap-4 overflow-y-auto absolute bg-zinc-900 h-100 w-full top-[120%] backdrop-blur-2xl z-99 rounded"
+        >
+          {isLoading && (
+            <div className="flex items-center justify-center h-full w-full">
+              <p>Loading...</p>
+            </div>
+          )}
+          {!isLoading &&
+            results?.map((video) => (
+              <VideoCard key={video.id} video={video} setIsOpen={setIsOpen} />
+            ))}
+        </div>
+      )}
     </div>
   );
 }

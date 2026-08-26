@@ -12,6 +12,7 @@ import {
   getOrCreateRoom,
   getExpectedRoomTime,
 } from "./rooms.js";
+import { fetchSearchResults } from "./youtube.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,10 +24,20 @@ app.use(
     credentials: true,
   }),
 );
+
 app.use(express.json());
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
+});
+
+// youtube.js
+
+app.get("/api/search", async (req, res) => {
+  const { q } = req.query;
+  console.log("api hit : ", q);
+  const results = await fetchSearchResults(q);
+  res.status(200).json({ status: "ok", results });
 });
 
 const httpServer = createServer(app);
@@ -104,7 +115,6 @@ io.on("connection", (socket) => {
     if (!currentRoomId) return;
     let room = getOrCreateRoom(currentRoomId);
     const activeUser = room.users.get(currentClientId);
-    console.log("Room : ", room);
     if (activeUser) {
       const idMatch = videoId === room.currentVideoId;
       const playMatch = isPlaying === room.isPlaying;

@@ -8,6 +8,7 @@ const VideoContainer = ({ setLoadingStage }) => {
   return (
     <div className="main-content">
       <Navbar />
+      
       {videoId && <VideoPlayer setLoadingStage={setLoadingStage} />}
     </div>
   );
