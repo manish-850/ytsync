@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Star from "../svg/Star";
 import Github from "../svg/Github";
+import { Separator } from "../ui/separator";
 
 const ProjectInfo = () => {
   const [stars, setStars] = useState(3);
@@ -18,6 +19,7 @@ const ProjectInfo = () => {
         <Star />
         <small>{stars}</small>
       </div>
+      <Separator orientation="vertical" />
       <div className="github">
         <Link
           target="_blank"

@@ -19,8 +19,8 @@ const VideoCard = ({ video, setIsOpen }) => {
   return (
     <div
       onClick={handleClick}
-      className="w-full h-20 bg-zinc-700 shrink-0 flex gap-4 justify-between rounded cursor-pointer"
-      style={{ padding: "2px 5px" }}
+      className="w-full h-20 hover:bg-zinc-800 shrink-0 flex gap-4 justify-between rounded cursor-pointer"
+      style={{ padding: "5px" }}
     >
       <div className="thumbnail-container w-[30%] lg:w-[40%] h-full rounded overflow-hidden shrink-0">
         <img
@@ -29,9 +29,9 @@ const VideoCard = ({ video, setIsOpen }) => {
           alt=""
         />
       </div>
-      <div className="text-container flex-1 flex flex-col h-full gap-2">
-        <h5 className="text-[10px] text-balance">{video.title}</h5>
-        <p className="text-[10px] text-muted-foreground">{video.channel}</p>
+      <div className="text-container flex-1 min-w-0 flex flex-col h-full gap-2 overflow-hidden">
+        <h5 className="text-[10px] line-clamp-3">{video.title}</h5>
+        <p className="text-[10px] text-muted-foreground truncate">{video.channel}</p>
       </div>
     </div>
   );

@@ -56,7 +56,7 @@ const useYoutubePlayer = (setLoadingStage) => {
           console.log("YT READY : ", event.data);
           playerRef.current = event.target;
           setLoadingStage("syncing");
-          toast.success("YT player ready");
+          toast.success("Player ready");
           if (handlePlayerReady) handlePlayerReady();
           if (!isAdmin) syncToTargetTime(playerRef, roomDataRef);
         },

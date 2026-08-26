@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import VideoCard from "./VideoCard";
 import { fetchSearchResults } from "@/api/searchResult";
 import { debounce } from "@/utils/debounce";
+import { Spinner } from "../ui/spinner";
 
 export default function RoomControls() {
   const [query, setQuery] = useState("");
@@ -59,11 +60,11 @@ export default function RoomControls() {
       {isOpen && (
         <div
           style={{ padding: "5px" }}
-          className="search-result-container flex flex-col items-center gap-4 overflow-y-auto absolute bg-zinc-900 h-100 w-full top-[120%] backdrop-blur-2xl z-99 rounded"
+          className="search-result-container flex flex-col items-center gap-2 overflow-y-auto absolute bg-zinc-900 h-100 w-full top-[120%] backdrop-blur-2xl z-99 rounded"
         >
           {isLoading && (
             <div className="flex items-center justify-center h-full w-full">
-              <p>Loading...</p>
+              <Spinner className="size-8" />
             </div>
           )}
           {!isLoading &&
