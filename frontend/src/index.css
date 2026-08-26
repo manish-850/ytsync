@@ -185,6 +185,17 @@ h3 {
   letter-spacing: -0.025em;
 }
 
+
+.search-result-container::-webkit-scrollbar {
+  width: 8px;
+  background-color: #181717;
+}
+
+.search-result-container::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 4px;
+}
+
 .app-container {
   display: grid;
   grid-template-columns: 1fr 360px;

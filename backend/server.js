@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { Innertube } from "youtubei.js";
 import cors from "cors";
 import "dotenv/config";
 import {
@@ -23,10 +24,44 @@ app.use(
     credentials: true,
   }),
 );
+
 app.use(express.json());
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
+});
+
+// youtube.js
+let yt = null;
+
+(async () => {
+  yt = await Innertube.create({
+    lang: "en",
+    location: "IN",
+    client_type: "WEB",
+    device_category: "DESKTOP",
+  });
+})();
+
+const fetch = async (q) => {
+  const search = await yt.search(q, {
+    type: "video"
+  });
+
+  return search.videos.map((video) => ({
+    id: video.id,
+    title: video.title.text,
+    channel: video.author?.name,
+    thumbnail: video.thumbnails?.[0]?.url,
+    duration: video.duration?.seconds
+  }));
+};
+
+app.get("/api/search", async (req, res) => {
+  const { q } = req.query;
+  console.log("api hit : ",q);
+  const results = await fetch(q);
+  res.status(200).json({ status: "ok", results });
 });
 
 const httpServer = createServer(app);

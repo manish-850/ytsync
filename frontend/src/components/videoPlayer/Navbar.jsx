@@ -58,7 +58,9 @@ const Navbar = () => {
   return (
     <div className="flex items-center justify-between">
       <h3>Room : {roomId}</h3>
-      {isAdmin && <RoomControls />}
+      {isAdmin && 
+      <RoomControls />
+      }
       <div className="flex gap-3">
         <Button variant="secondary" size="icon" onClick={toggleMute}>
           {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
