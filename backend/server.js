@@ -1,7 +1,6 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { Innertube } from "youtubei.js";
 import cors from "cors";
 import "dotenv/config";
 import {
@@ -13,6 +12,7 @@ import {
   getOrCreateRoom,
   getExpectedRoomTime,
 } from "./rooms.js";
+import { fetchSearchResults } from "./youtube.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,35 +32,11 @@ app.get("/health", (req, res) => {
 });
 
 // youtube.js
-let yt = null;
-
-(async () => {
-  yt = await Innertube.create({
-    lang: "en",
-    location: "IN",
-    client_type: "WEB",
-    device_category: "DESKTOP",
-  });
-})();
-
-const fetch = async (q) => {
-  const search = await yt.search(q, {
-    type: "video"
-  });
-
-  return search.videos.map((video) => ({
-    id: video.id,
-    title: video.title.text,
-    channel: video.author?.name,
-    thumbnail: video.thumbnails?.[0]?.url,
-    duration: video.duration?.seconds
-  }));
-};
 
 app.get("/api/search", async (req, res) => {
   const { q } = req.query;
-  console.log("api hit : ",q);
-  const results = await fetch(q);
+  console.log("api hit : ", q);
+  const results = await fetchSearchResults(q);
   res.status(200).json({ status: "ok", results });
 });
 
