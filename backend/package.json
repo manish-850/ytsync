@@ -12,7 +12,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "youtubei.js": "^18.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
