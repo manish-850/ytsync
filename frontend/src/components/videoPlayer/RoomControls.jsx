@@ -42,7 +42,7 @@ export default function RoomControls() {
   }, [containerRef]);
 
   return (
-    <div ref={containerRef} className="load-video-container relative flex-1">
+    <div ref={containerRef} className="relative flex-1 flex flex-col gap-5 lg:gap-10">
       <form onSubmit={(e) => e.preventDefault()} className="url-input-group flex items-center justify-between w-full">
         <Input
           className="search-input w-full"

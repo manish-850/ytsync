@@ -179,8 +179,6 @@ h2 {
   letter-spacing: -0.025em;
 }
 
-
-
 .search-result-container::-webkit-scrollbar {
   width: 8px;
   background-color: #181717;
@@ -189,20 +187,4 @@ h2 {
 .search-result-container::-webkit-scrollbar-thumb {
   background-color: #555;
   border-radius: 4px;
-}
-
-.app-container {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 1rem;
-  height: 100vh;
-}
-
-@media (max-width: 768px) {
-  .app-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    height: auto;
-    overflow: auto;
-  }
 }
