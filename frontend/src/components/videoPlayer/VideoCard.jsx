@@ -22,7 +22,7 @@ const VideoCard = ({ video, setIsOpen }) => {
       className="w-full h-20 bg-zinc-700 shrink-0 flex gap-4 justify-between rounded cursor-pointer"
       style={{ padding: "2px 5px" }}
     >
-      <div className="thumbnail-container w-[40%] h-full rounded overflow-hidden shrink-0">
+      <div className="thumbnail-container w-[30%] lg:w-[40%] h-full rounded overflow-hidden shrink-0">
         <img
           className="w-full h-full object-cover"
           src={video.thumbnail}
