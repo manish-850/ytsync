@@ -42,10 +42,10 @@ export default function RoomControls() {
   }, [containerRef]);
 
   return (
-    <div ref={containerRef} className="load-video-container relative">
-      <form onSubmit={(e) => e.preventDefault()} className="url-input-group">
+    <div ref={containerRef} className="load-video-container relative flex-1">
+      <form onSubmit={(e) => e.preventDefault()} className="url-input-group flex items-center justify-between w-full">
         <Input
-          className="search-input"
+          className="search-input w-full"
           type="text"
           placeholder="Search youtube"
           value={query}
@@ -60,7 +60,7 @@ export default function RoomControls() {
       {isOpen && (
         <div
           style={{ padding: "5px" }}
-          className="search-result-container flex flex-col items-center gap-2 overflow-y-auto absolute bg-zinc-900 h-100 w-full top-[120%] backdrop-blur-2xl z-99 rounded"
+          className="search-result-container flex flex-col items-center gap-2 overflow-y-auto absolute bg-zinc-900 h-100 w-[80vw] translate-x-[-50%] left-[50%] lg:w-full top-[120%] z-99 rounded"
         >
           {isLoading && (
             <div className="flex items-center justify-center h-full w-full">
