@@ -2,41 +2,20 @@ import { useState } from "react";
 import { Video } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { socket } from "../../services/socket";
-import useRoom from "@/hooks/room/useRoom";
-import axios from "axios";
 import VideoCard from "./VideoCard";
+import { fetchSearchResults } from "@/api/searchResult";
 
 export default function RoomControls() {
-  const [videoUrl, setVideoUrl] = useState("");
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  
-
-  const extractVideoId = (url) => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*$/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : url;
-  };
-
-  const api = axios.create({
-    baseURL: "http://localhost:5000/api",
-  });
 
   const handleVideoSubmit = async (e) => {
     e.preventDefault();
-    if (!videoUrl.trim()) return;
-    // const id = extractVideoId(videoUrl);
-    // setVideoId(id);
-    // if (id) {
-    //   handleChangeVideo(id);
-    //   setVideoUrl("");
-    // }
-
-    const { data } = await api.get(`/search?q=${videoUrl}`);
-    setResults(data.results);
-    setVideoUrl("");
+    if (!query.trim()) return;
+    const results = await fetchSearchResults(query);
+    setResults(results);
+    setQuery("");
   };
 
   return (
@@ -46,8 +25,8 @@ export default function RoomControls() {
           className="search-input"
           type="text"
           placeholder="Search youtube"
-          value={videoUrl}
-          onChange={(e) => setVideoUrl(e.target.value)}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsOpen(true)}
         />
         <Button type="submit" variant="default" size="icon">

@@ -2,7 +2,7 @@ import useRoom from "@/hooks/room/useRoom";
 import { getSocket } from "@/services/socket";
 
 const VideoCard = ({ video, setIsOpen }) => {
-    const { setVideoId } = useRoom();
+  const { setVideoId } = useRoom();
   const socket = getSocket();
   const handleChangeVideo = (videoId) => {
     if (socket) {
@@ -11,9 +11,8 @@ const VideoCard = ({ video, setIsOpen }) => {
     }
   };
   const handleClick = () => {
-    console.log("clicked");
-    if(!video.id) return;
-    setVideoId(video.id)
+    if (!video.id) return;
+    setVideoId(video.id);
     handleChangeVideo(video.id);
     setIsOpen(false);
   };

@@ -115,7 +115,6 @@ io.on("connection", (socket) => {
     if (!currentRoomId) return;
     let room = getOrCreateRoom(currentRoomId);
     const activeUser = room.users.get(currentClientId);
-    console.log("Room : ", room);
     if (activeUser) {
       const idMatch = videoId === room.currentVideoId;
       const playMatch = isPlaying === room.isPlaying;
