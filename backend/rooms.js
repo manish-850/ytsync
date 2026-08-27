@@ -29,7 +29,13 @@ export function addUserToRoom(roomId, socketId, username, clientId) {
     user.id = socketId;
     user.username = username;
   } else {
-    room.users.set(clientId, { id: socketId, username, isAdmin, clientId });
+    user = {
+      id: socketId,
+      username,
+      isAdmin,
+      clientId,
+    };
+    room.users.set(clientId, user);
   }
   return { room, user };
 }

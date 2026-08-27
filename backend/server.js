@@ -47,6 +47,8 @@ const io = new Server(httpServer, {
     methods: ["GET", "POST"],
     credentials: true,
   },
+  pingInterval: 10000, // ping after every 10 second
+  pingTimeout: 5000, // disconnects the user after 5 seconds
 });
 
 io.on("connection", (socket) => {
@@ -58,15 +60,17 @@ io.on("connection", (socket) => {
     currentRoomId = roomId;
     currentUsername = username;
     currentClientId = clientId;
-
     socket.join(roomId);
+    const roomBeforeJoin = getOrCreateRoom(roomId);
+    const isNewUser = !roomBeforeJoin.users.has(clientId);
     const { room } = addUserToRoom(roomId, socket.id, username, clientId);
-
+    if (isNewUser) {
+      io.to(roomId).emit("chat-message", {
+        sender: "System",
+        text: `${username} joined the room.`,
+      });
+    }
     io.to(roomId).emit("room-update", getRoomData(room));
-    io.to(roomId).emit("chat-message", {
-      sender: "System",
-      text: `${username} joined the room.`,
-    });
   });
 
   socket.on("send-message", ({ text }) => {
@@ -148,6 +152,9 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     if (!currentRoomId) return;
     const result = removeUserFromRoom(currentRoomId, currentClientId);
+    console.log(
+      `User ${currentUsername} disconnected from room ${currentRoomId}`,
+    );
     if (result) {
       const { room } = result;
       io.to(currentRoomId).emit("room-update", getRoomData(room));
