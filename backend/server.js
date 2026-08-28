@@ -124,7 +124,7 @@ io.on("connection", (socket) => {
       const playMatch = isPlaying === room.isPlaying;
       const expectedTime = getExpectedRoomTime(room);
       const drift = expectedTime - currentTime;
-      const timeMatch = Math.abs(drift) <= 1;
+      const timeMatch = Math.abs(drift) <= 0.5;
       const isSynced =
         idMatch && (room.isPlaying ? playMatch && timeMatch : true);
       activeUser.status = {
@@ -133,7 +133,7 @@ io.on("connection", (socket) => {
         isSynced,
         lastReport: Date.now(),
       };
-      if (Math.abs(drift) > 1) {
+      if (Math.abs(drift) > 0.5) {
         socket.emit("playback-sync", {
           currentTime: room.currentTime,
           serverTime: room.serverTime,

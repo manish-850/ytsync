@@ -13,7 +13,7 @@ export const syncToTargetTime = (playerRef, roomDataRef) => {
   const currentTime = player.getCurrentTime();
   const drift = targetTime - currentTime;
 
-  if (Math.abs(drift) > 1) {
+  if (Math.abs(drift) > 0.25) {
     player.seekTo(targetTime, true);
   }
 };
