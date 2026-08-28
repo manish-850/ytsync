@@ -10,6 +10,7 @@ import useInitUsername from "@/hooks/room/useInitUsername";
 import { getSocket } from "@/services/socket";
 import { toast } from "sonner";
 import useLeaveRoom from "@/hooks/room/useLeaveRoom";
+import useClockSync from "@/hooks/room/useClockSync";
 
 const RoomPage = () => {
   const [loadingStage, setLoadingStage] = useState("connecting");
@@ -26,6 +27,7 @@ const RoomPage = () => {
   }, []);
 
   useSocket();
+  useClockSync(setLoadingStage);
   useInitUsername();
   const { joinRoom } = useJoinRoom(clientId, setLoadingStage);
   const { updateRoom } = useUpdateRoom(clientId, setLoadingStage);

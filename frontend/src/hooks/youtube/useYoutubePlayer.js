@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 const useYoutubePlayer = (setLoadingStage) => {
   const { playerRef, isMuted } = usePlayer();
-  const { roomDataRef, isAdmin, videoId, roomId } = useRoom();
+  const { roomDataRef, isAdmin, videoId, roomId, offsetRef } = useRoom();
   const lastTimeRef = useRef(0);
   const iframeId = "yt-player";
 
@@ -58,7 +58,7 @@ const useYoutubePlayer = (setLoadingStage) => {
           setLoadingStage("syncing");
           toast.success("Player ready");
           if (handlePlayerReady) handlePlayerReady();
-          if (!isAdmin) syncToTargetTime(playerRef, roomDataRef);
+          if (!isAdmin) syncToTargetTime(playerRef, roomDataRef, offsetRef);
         },
         onStateChange: (event) => {
           console.log("state change", playerRef.current.getCurrentTime());
@@ -70,7 +70,7 @@ const useYoutubePlayer = (setLoadingStage) => {
                 handlePlaybackControl(false, event.target.getCurrentTime());
               }
             }
-          } else if (event.data === 1) syncToTargetTime(playerRef, roomDataRef);
+          } else if (event.data === 1) syncToTargetTime(playerRef, roomDataRef, offsetRef);
         },
       },
     });
