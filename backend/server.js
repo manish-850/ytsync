@@ -56,6 +56,20 @@ io.on("connection", (socket) => {
   let currentUsername = null;
   let currentClientId = null;
 
+  socket.on("ping", ({ t1 }) => {
+    const t2 = Date.now();
+
+    // Process request here if needed
+
+    const t3 = Date.now();
+
+    socket.emit("pong", {
+      t1,
+      t2,
+      t3,
+    });
+  });
+
   socket.on("join-room", ({ roomId, username, clientId }) => {
     currentRoomId = roomId;
     currentUsername = username;
@@ -95,17 +109,12 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("playback-control", ({ isPlaying, currentTime, clientTime }) => {
+  socket.on("playback-control", ({ isPlaying, currentTime }) => {
     if (!currentRoomId) return;
     let room = getOrCreateRoom(currentRoomId);
     const activeUser = room.users.get(currentClientId);
     if (activeUser && activeUser.isAdmin) {
-      room = updateRoomPlayback(
-        currentRoomId,
-        isPlaying,
-        currentTime,
-        clientTime,
-      );
+      room = updateRoomPlayback(currentRoomId, isPlaying, currentTime);
       socket.to(currentRoomId).emit("playback-sync", {
         isPlaying: room.isPlaying,
         currentTime: room.currentTime,

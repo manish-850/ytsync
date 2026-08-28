@@ -6,6 +6,5 @@ export const handlePlaybackControl = (isPlaying, currentTime) => {
   s.emit("playback-control", {
     isPlaying,
     currentTime,
-    clientTime: Date.now(),
   });
 };

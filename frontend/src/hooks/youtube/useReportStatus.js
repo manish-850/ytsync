@@ -27,7 +27,6 @@ const useReportStatus = () => {
         videoId,
         isPlaying: player.getPlayerState() === 1,
         currentTime: player.getCurrentTime(),
-        clientTime: Date.now(),
       });
     }, 3000);
 

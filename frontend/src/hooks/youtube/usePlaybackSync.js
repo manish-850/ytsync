@@ -6,7 +6,7 @@ import useRoom from "../room/useRoom";
 
 const usePlaybackSync = () => {
   const { playerRef } = usePlayer();
-  const { roomDataRef } = useRoom();
+  const { roomDataRef, offsetRef } = useRoom();
   useEffect(() => {
     if (!socket) return;
 
@@ -15,7 +15,7 @@ const usePlaybackSync = () => {
       const player = playerRef.current;
       if (!player || typeof player.getPlayerState !== "function") return;
       const playerState = player.getPlayerState();
-      syncToTargetTime(playerRef, roomDataRef);
+      syncToTargetTime(playerRef, roomDataRef, offsetRef);
       if (isPlaying) {
         if (playerState !== window.YT.PlayerState.PLAYING) {
           player.playVideo();

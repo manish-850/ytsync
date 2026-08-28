@@ -6,6 +6,8 @@ const RoomContext = ({ children }) => {
   const [isJoined, setIsJoined] = useState(false);
   const [roomId, setRoomId] = useState("");
   const roomDataRef = useRef(null);
+  const offsetRef = useRef(0);
+  const rttRef = useRef(0);
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +22,8 @@ const RoomContext = ({ children }) => {
         roomId,
         setRoomId,
         roomDataRef,
+        offsetRef,
+        rttRef,
         users,
         setUsers,
         messages,
