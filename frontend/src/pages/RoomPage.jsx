@@ -27,7 +27,7 @@ const RoomPage = () => {
   }, []);
 
   useSocket();
-  useClockSync();
+  useClockSync(setLoadingStage);
   useInitUsername();
   const { joinRoom } = useJoinRoom(clientId, setLoadingStage);
   const { updateRoom } = useUpdateRoom(clientId, setLoadingStage);

@@ -1,9 +1,8 @@
 import { getSocket } from "@/services/socket";
 import { useEffect } from "react";
 import useRoom from "./useRoom";
-const useClockSync = () => {
-  const { offsetRef } = useRoom();
-  const { rttRef } = useRoom();
+const useClockSync = (setLoadingStage) => {
+  const { offsetRef, rttRef } = useRoom();
 
   useEffect(() => {
     const socket = getSocket();
@@ -17,8 +16,10 @@ const useClockSync = () => {
 
       const offset = (t2 - t1 + (t3 - t4)) / 2;
 
-      rttRef.current = rtt;
-      offsetRef.current = offset;
+      if (rtt < rttRef.current) {
+        rttRef.current = rtt;
+        offsetRef.current = offset;
+      }
 
       console.log({
         rtt,
@@ -34,10 +35,22 @@ const useClockSync = () => {
 
     socket.on("pong", handlePong);
 
-    syncClock();
+    // Send 5 samples
+    const timeouts = [];
+    for (let i = 0; i < 5; i++) {
+      setLoadingStage("clockSyncing");
+      const timeout = setTimeout(() => {
+        syncClock();
+      }, i * 200);
+
+      timeouts.push(timeout);
+    }
 
     return () => {
       socket.off("pong", handlePong);
+      timeouts.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
     };
   }, []);
 };

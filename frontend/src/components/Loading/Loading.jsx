@@ -15,6 +15,10 @@ export default function Loading({ stage }) {
       title: "Synchronizing",
       subtitle: "Seeking to the correct timestamp...",
     },
+    clockSyncing: {
+      title: "Synchronizing clock",
+      subtitle: "Syncing your clock with the server...",
+    },
   };
   const { title, subtitle } = messages[stage];
 

@@ -7,7 +7,7 @@ const RoomContext = ({ children }) => {
   const [roomId, setRoomId] = useState("");
   const roomDataRef = useRef(null);
   const offsetRef = useRef(0);
-  const rttRef = useRef(0);
+  const rttRef = useRef(Infinity);
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
