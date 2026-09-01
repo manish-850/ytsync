@@ -1,8 +1,15 @@
 import { getSocket } from "@/services/socket";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import useRoom from "./useRoom";
 const useClockSync = (setLoadingStage) => {
   const { offsetRef, rttRef } = useRoom();
+  const previousRtt = rttRef.current;
+  const syncClock = useCallback(() => {
+    const socket = getSocket();
+    socket.emit("ping", {
+      t1: Date.now(),
+    });
+  }, []);
 
   useEffect(() => {
     const socket = getSocket();
@@ -16,7 +23,7 @@ const useClockSync = (setLoadingStage) => {
 
       const offset = (t2 - t1 + (t3 - t4)) / 2;
 
-      if (rtt < rttRef.current) {
+      if (rtt <= 200 && (previousRtt === 0 || rtt <= previousRtt * 3)) {
         rttRef.current = rtt;
         offsetRef.current = offset;
       }
@@ -27,17 +34,11 @@ const useClockSync = (setLoadingStage) => {
       });
     };
 
-    const syncClock = () => {
-      socket.emit("ping", {
-        t1: Date.now(),
-      });
-    };
-
     socket.on("pong", handlePong);
 
-    // Send 5 samples
+    // Send 10 samples
     const timeouts = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       setLoadingStage("clockSyncing");
       const timeout = setTimeout(() => {
         syncClock();
@@ -53,6 +54,7 @@ const useClockSync = (setLoadingStage) => {
       });
     };
   }, []);
+  return { syncClock };
 };
 
 export default useClockSync;
