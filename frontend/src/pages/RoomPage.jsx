@@ -27,7 +27,7 @@ const RoomPage = () => {
   }, []);
 
   useSocket();
-  useClockSync(setLoadingStage);
+  const { syncClock } = useClockSync(setLoadingStage);
   useInitUsername();
   const { joinRoom } = useJoinRoom(clientId, setLoadingStage);
   const { updateRoom } = useUpdateRoom(clientId, setLoadingStage);
@@ -101,6 +101,17 @@ const RoomPage = () => {
       clearTimeout(timeout);
     };
   }, [isOnline, leaveRoom]);
+
+  useEffect(() => {
+    if (loadingStage !== "ready") return;
+    const interval = setInterval(() => {
+      syncClock();
+    }, 30000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [loadingStage, syncClock]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-5 h-screen w-full justify-between">

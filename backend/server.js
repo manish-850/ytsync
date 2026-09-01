@@ -126,7 +126,7 @@ io.on("connection", (socket) => {
 
   socket.on("report-status", ({ videoId, isPlaying, currentTime }) => {
     if (!currentRoomId) return;
-    let room = getOrCreateRoom(currentRoomId);
+    const room = getOrCreateRoom(currentRoomId);
     const activeUser = room.users.get(currentClientId);
     if (activeUser) {
       const idMatch = videoId === room.currentVideoId;
@@ -134,8 +134,7 @@ io.on("connection", (socket) => {
       const expectedTime = getExpectedRoomTime(room);
       const drift = expectedTime - currentTime;
       const timeMatch = Math.abs(drift) <= 0.5;
-      const isSynced =
-        idMatch && (room.isPlaying ? playMatch && timeMatch : true);
+      const isSynced = idMatch && (room.isPlaying ? playMatch && timeMatch : true);
       activeUser.status = {
         currentTime,
         drift,
