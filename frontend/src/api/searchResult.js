@@ -6,7 +6,6 @@ export const fetchSearchResults = async (query, setIsLoading) => {
     const api = getApi();
     const { data } = await api.get(`/search?q=${query}`);
     return data.results;
-    // console.log(data);
   } catch (err) {
     console.log(err);
   } finally {

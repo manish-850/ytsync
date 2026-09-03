@@ -15,13 +15,7 @@ const useReportStatus = () => {
     const interval = setInterval(() => {
       const player = playerRef.current;
 
-      if (
-        !player ||
-        typeof player.getCurrentTime !== "function" ||
-        typeof player.getPlayerState !== "function"
-      ) {
-        return;
-      }
+      if (!player || !player.getCurrentTime || !player.getPlayerState) return;
 
       socket.emit("report-status", {
         videoId,
