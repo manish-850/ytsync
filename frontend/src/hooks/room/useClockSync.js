@@ -1,7 +1,7 @@
 import { getSocket } from "@/services/socket";
 import { useEffect, useCallback } from "react";
 import useRoom from "./useRoom";
-const useClockSync = (setLoadingStage) => {
+const useClockSync = ({loadingStage, setLoadingStage}) => {
   const { offsetRef, rttRef } = useRoom();
   const previousRtt = rttRef.current;
   const syncClock = useCallback(() => {
@@ -54,7 +54,17 @@ const useClockSync = (setLoadingStage) => {
       });
     };
   }, []);
-  return { syncClock };
+
+  useEffect(() => {
+    if (loadingStage !== "ready") return;
+    const interval = setInterval(() => {
+      syncClock();
+    }, 30000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [loadingStage, syncClock]);
 };
 
 export default useClockSync;

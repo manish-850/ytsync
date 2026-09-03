@@ -7,7 +7,6 @@ const useForm = () => {
     e.preventDefault();
     if (username.trim()) localStorage.setItem("username", username);
     if (roomId.trim()) setIsLoading(true);
-    
   };
 
   const handleCreateRoom = () => {

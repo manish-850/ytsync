@@ -1,13 +1,14 @@
 import useRoom from "../room/useRoom";
 import usePlayer from "../player/usePlayer";
 import { useEffect, useRef } from "react";
-import { syncToTargetTime } from "@/utils/syncToTargetTime";
-import { handlePlaybackControl } from "@/utils/handlePlaybackControl";
-import { toast } from "sonner";
 
-const useYoutubePlayer = (setLoadingStage) => {
+const useYoutubePlayer = ({
+  setLoadingStage,
+  handlePlaybackControl,
+  syncToTargetTime,
+}) => {
   const { playerRef, isMuted } = usePlayer();
-  const { roomDataRef, isAdmin, videoId, roomId, offsetRef } = useRoom();
+  const { roomDataRef, isAdmin, videoId, roomId } = useRoom();
   const lastTimeRef = useRef(0);
   const iframeId = "yt-player";
 
@@ -15,7 +16,7 @@ const useYoutubePlayer = (setLoadingStage) => {
     if (!videoId || !isAdmin) return;
     const interval = setInterval(() => {
       const player = playerRef?.current;
-      if (!player) return () => clearInterval(interval);
+      if (!player || !player.getCurrentTime) return;
       const now = player?.getCurrentTime();
       const diff = now - lastTimeRef.current;
       if (Math.abs(diff) > 2)
@@ -26,58 +27,56 @@ const useYoutubePlayer = (setLoadingStage) => {
     return () => clearInterval(interval);
   }, [isAdmin, videoId]);
 
-  const handlePlayerReady = () => {
-    const player = playerRef.current;
-    const roomData = roomDataRef.current;
-    if (isMuted) player.mute();
-    else player.unmute();
-    if (roomData) {
-      player.seekTo(roomData.currentTime, true);
-      setLoadingStage("ready");
-      if (roomData.isPlaying) player.playVideo();
-      else player.pauseVideo();
-    }
-  };
-  const initPlayer = () => {
-    console.log("Creating player");
-    playerRef.current = new window.YT.Player(iframeId, {
-      videoId,
-      playerVars: {
-        controls: isAdmin ? 1 : 0,
-        disablekb: isAdmin ? 0 : 1,
-        rel: 0,
-        modestbranding: 1,
-        autoplay: 1,
-        enablejsapi: 1,
-        origin: window.location.origin,
-      },
-      events: {
-        onReady: (event) => {
-          console.log("YT READY : ", event.data);
-          playerRef.current = event.target;
-          setLoadingStage("syncing");
-          toast.success("Player ready");
-          if (handlePlayerReady) handlePlayerReady();
-          if (!isAdmin) syncToTargetTime(playerRef, roomDataRef, offsetRef);
-        },
-        onStateChange: (event) => {
-          console.log("state change", playerRef.current.getCurrentTime());
-          if (isAdmin) {
-            if (handlePlaybackControl) {
-              if (event.data === 1) {
-                handlePlaybackControl(true, event.target.getCurrentTime());
-              } else if (event.data === 2) {
-                handlePlaybackControl(false, event.target.getCurrentTime());
-              }
-            }
-          } else if (event.data === 1) syncToTargetTime(playerRef, roomDataRef, offsetRef);
-        },
-      },
-    });
-  };
-
   useEffect(() => {
     let checkInterval;
+    const handlePlayerReady = () => {
+      const player = playerRef.current;
+      const roomData = roomDataRef.current;
+      if (isMuted && player.mute) player.mute();
+      else if (!isMuted && player.unmute) player.unmute();
+      if (roomData) {
+        syncToTargetTime();
+        setLoadingStage("ready");
+        if (roomData.isPlaying) player.playVideo();
+        else player.pauseVideo();
+      }
+    };
+
+    const initPlayer = () => {
+      console.log("Creating player");
+      playerRef.current = new window.YT.Player(iframeId, {
+        videoId,
+        playerVars: {
+          controls: isAdmin ? 1 : 0,
+          disablekb: isAdmin ? 0 : 1,
+          rel: 0,
+          modestbranding: 1,
+          autoplay: 1,
+          enablejsapi: 1,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: (event) => {
+            console.log("yt ready : ", event.data);
+            playerRef.current = event.target;
+            setLoadingStage("syncing");
+            handlePlayerReady();
+          },
+          onStateChange: (event) => {
+            console.log("state change", event.target.getCurrentTime());
+            if (isAdmin) {
+              if (handlePlaybackControl) {
+                if (event.data === 1) {
+                  handlePlaybackControl(true, event.target.getCurrentTime());
+                } else if (event.data === 2) {
+                  handlePlaybackControl(false, event.target.getCurrentTime());
+                }
+              }
+            }
+          },
+        },
+      });
+    };
 
     if (window.YT && window.YT.Player) {
       initPlayer();
@@ -101,15 +100,12 @@ const useYoutubePlayer = (setLoadingStage) => {
 
     return () => {
       if (checkInterval) clearInterval(checkInterval);
-      if (
-        playerRef.current &&
-        typeof playerRef.current.destroy === "function"
-      ) {
+      if (playerRef.current && playerRef.current.destroy) {
         console.log("Destroying player");
         playerRef.current.destroy();
       }
     };
-  }, [roomId]);
+  }, [roomId, isAdmin]);
 };
 
 export default useYoutubePlayer;
