@@ -24,7 +24,7 @@ const usePlaybackSync = () => {
     const currentTime = player.getCurrentTime();
     const drift = targetTime - currentTime;
 
-    if (Math.abs(drift) > 0.25) {
+    if (Math.abs(drift) > 0.1) {
       player.seekTo(targetTime, true);
     }
   }, []);

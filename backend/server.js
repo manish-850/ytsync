@@ -48,7 +48,7 @@ const io = new Server(httpServer, {
     credentials: true,
   },
   pingInterval: 10000, // ping after every 10 second
-  pingTimeout: 5000, // disconnects the user after 5 seconds
+  // pingTimeout: 5000, // disconnects the user after 5 seconds
 });
 
 io.on("connection", (socket) => {
@@ -99,7 +99,10 @@ io.on("connection", (socket) => {
     if (!currentRoomId) return;
     const room = getOrCreateRoom(currentRoomId);
     const activeUser = room.users.get(currentClientId);
-    if (activeUser && activeUser.isAdmin) {
+    if (
+      activeUser &&
+      (activeUser.isAdmin || room.playbackControl === "everyone")
+    ) {
       updateRoomVideo(currentRoomId, videoId);
       io.to(currentRoomId).emit("room-update", getRoomData(room));
       io.to(currentRoomId).emit("chat-message", {
@@ -124,6 +127,21 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("change-playback-author", () => {
+    const room = getOrCreateRoom(currentRoomId);
+    const activeUser = room.users.get(currentClientId);
+    if (activeUser && activeUser.isAdmin) {
+      if (room.playbackControl === "admin") room.playbackControl = "everyone";
+      else if (room.playbackControl === "everyone")
+        room.playbackControl = "admin";
+      io.to(currentRoomId).emit("room-update", getRoomData(room));
+      io.to(currentRoomId).emit("chat-message", {
+        sender: "System",
+        text: `${currentUsername} changed the playback control.`,
+      });
+    }
+  });
+
   socket.on("report-status", ({ videoId, isPlaying, currentTime }) => {
     if (!currentRoomId) return;
     const room = getOrCreateRoom(currentRoomId);
@@ -134,7 +152,8 @@ io.on("connection", (socket) => {
       const expectedTime = getExpectedRoomTime(room);
       const drift = expectedTime - currentTime;
       const timeMatch = Math.abs(drift) <= 0.5;
-      const isSynced = idMatch && (room.isPlaying ? playMatch && timeMatch : true);
+      const isSynced =
+        idMatch && (room.isPlaying ? playMatch && timeMatch : true);
       activeUser.status = {
         currentTime,
         drift,
@@ -155,6 +174,17 @@ io.on("connection", (socket) => {
         isSynced,
       });
     }
+  });
+
+  socket.on("sync-request", () => {
+    if (!currentRoomId) return;
+    const room = getOrCreateRoom(currentRoomId);
+    socket.emit("playback-sync", {
+      currentTime: room.currentTime,
+      serverTime: room.serverTime,
+      isPlaying: room.isPlaying,
+      currentVideoId: room.currentVideoId,
+    });
   });
 
   socket.on("disconnect", () => {
