@@ -1,7 +1,8 @@
-import { MessageCircle, User2Icon } from "lucide-react";
+import { MessageCircle, User2Icon, Cog } from "lucide-react";
 import Chat from "../chat/Chat";
 import Users from "../chat/Users";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Controls from "../sidebar/Controls";
 
 export default function Sidebar() {
   return (
@@ -23,12 +24,22 @@ export default function Sidebar() {
               <User2Icon />
               Viewers
             </TabsTrigger>
+            <TabsTrigger
+              className="cursor-pointer sidebar-tabstrigger"
+              value="controls"
+            >
+              <Cog />
+              Controls
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="chat" className="px-2">
             <Chat />
           </TabsContent>
           <TabsContent value="viewers">
             <Users />
+          </TabsContent>
+          <TabsContent value="controls">
+            <Controls />
           </TabsContent>
         </Tabs>
       </div>

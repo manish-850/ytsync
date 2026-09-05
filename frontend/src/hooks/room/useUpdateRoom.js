@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 import useRoom from "./useRoom";
 import { useParams } from "react-router-dom";
 
-const useUpdateRoom = ({clientId, setLoadingStage}) => {
+const useUpdateRoom = ({ clientId, setLoadingStage }) => {
   const {
     roomDataRef,
     setUsername,
@@ -12,6 +12,7 @@ const useUpdateRoom = ({clientId, setLoadingStage}) => {
     setIsJoined,
     setVideoId,
     setUsers,
+    setPlaybackControl,
   } = useRoom();
   const { roomId } = useParams();
 
@@ -27,6 +28,7 @@ const useUpdateRoom = ({clientId, setLoadingStage}) => {
         setIsJoined(true);
         setRoomId(data?.id);
         setVideoId(data?.currentVideoId);
+        setPlaybackControl(data?.playbackControl)
         setLoadingStage((prev) => {
           if (prev === "ready") return prev;
           return "player";

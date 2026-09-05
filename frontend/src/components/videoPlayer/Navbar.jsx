@@ -8,7 +8,7 @@ import useLeaveRoom from "@/hooks/room/useLeaveRoom";
 const Navbar = () => {
   const { leaveRoom } = useLeaveRoom();
   const { playerRef, isMuted, setIsMuted } = usePlayer();
-  const { roomId, isAdmin } = useRoom();
+  const { roomId, isAdmin, playbackControl } = useRoom();
   const toggleMute = () => {
     const player = playerRef.current;
     if (!player || typeof player.mute !== "function") return;
@@ -24,7 +24,7 @@ const Navbar = () => {
   return (
     <div className="flex items-center justify-between gap-5 lg:gap-50 h-8">
       <h3 className="text-sm w-fit">Room: {roomId}</h3>
-      {isAdmin && <RoomControls />}
+      {(isAdmin || playbackControl === "everyone") && <RoomControls />}
       <div className="flex gap-3 w-fit">
         <Button variant="secondary" size="icon" onClick={toggleMute}>
           {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}

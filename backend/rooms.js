@@ -7,6 +7,7 @@ export function getOrCreateRoom(roomId) {
       users: new Map(),
       currentVideoId: "dQw4w9WgXcQ",
       currentTime: 0,
+      playbackControl: "admin",
       isPlaying: false,
       serverTime: Date.now(),
     });
@@ -73,6 +74,7 @@ export function getRoomData(room) {
     currentVideoId: room.currentVideoId,
     currentTime: room.currentTime,
     isPlaying: room.isPlaying,
+    playbackControl: room.playbackControl,
     serverTime: room.serverTime,
   };
 }
