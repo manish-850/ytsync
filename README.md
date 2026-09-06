@@ -1,269 +1,268 @@
 # YTSync
 
-A real-time YouTube synchronization application that allows multiple users to watch videos together with synchronized playback and live chat.
+A real-time YouTube watch-together app with server-authoritative synchronization, clock offset estimation, drift correction, live chat, and configurable playback permissions.
 
-Built with **React**, **Express**, **Socket.IO**, the **YouTube IFrame API**, and **YouTube.js**.
-
-> **Status :** Active Development
-
-> **Acknowledgement :** This project is a fork of [yt-cowatch](https://github.com/GitUtk/yt-cowatch) by GitUtk.
+> **Status :** Active Development  
+> **Based on :** [yt-cowatch](https://github.com/GitUtk/yt-cowatch) by GitUtk — substantially refactored and extended.
 
 ---
 
-# Features
+## Features
 
-- Real-time synchronized YouTube playback
-- Server-authoritative synchronization algorithm
-- Automatic playback drift detection and correction
-- Play, pause, seek, and video change synchronization
-- Create and join rooms instantly
-- Admin-controlled playback
+- Synchronized YouTube playback — play, pause, seek, and switch videos in sync
+- Server-authoritative room state
+- Client/server clock offset estimation using RTT measurements
+- Periodic resynchronization to reduce drift over time
+- Latency-compensated playback position calculation
+- Configurable playback control — `admin` or `everyone` mode
+- Automatic reconnection with room state restoration
+- Persistent `clientId` to prevent duplicate users after reconnect
 - Live room chat
-- Search YouTube videos directly from the application
-- Debounced search to reduce unnecessary API requests
-- Select videos without manually pasting YouTube URLs
-- Automatic room restoration after page refresh
-- Persistent user identity using `clientId`
-- Username persistence with Local Storage
-- Shared room state across all participants
-- Responsive UI
-- Reusable UI components powered by **shadcn/ui**
-- Modular React architecture using custom hooks
+- YouTube search directly from the app with debounced requests
+- Responsive UI built with Tailwind CSS and shadcn/ui
+- Clear loading and connection state feedback
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-## Frontend
+**Frontend** — React 19, Tailwind CSS, shadcn/ui, Socket.IO Client, Axios
 
-- React
-- Vite
-- Tailwind CSS v4
-- shadcn/ui
-- Context API
-- Custom Hooks
-- Socket.IO Client
-- Axios
+**Backend** — Node.js, Express, Socket.IO, youtubei.js
 
-## Backend
-
-- Node.js
-- Express
-- Socket.IO
-- YouTube.js
-
-## APIs
-
-- YouTube IFrame API for video playback
-- YouTube.js / Innertube for searching YouTube videos
-
-## Deployment
-
-- **Frontend:** Vercel
-- **Backend:** Render
+**APIs** — YouTube IFrame Player API, YouTube internal search via youtubei.js
 
 ---
 
-# Architecture
-
-```text
-                         Admin
-                           │
-                           │ Playback Controls
-                           ▼
-                 ┌─────────────────────┐
-                 │       Server        │
-                 │   Source of Truth   │
-                 └──────────┬──────────┘
-                            │
-          ┌─────────────────┼─────────────────┐
-          │                 │                 │
-          ▼                 ▼                 ▼
-   Maintains Room     Calculates Expected   Detects Playback
-   Playback State     Playback Position         Drift
-                            │
-                            ▼
-                   Sends Synchronization
-                      When Required
-                            │
-                            ▼
-                       Participants
+## Architecture
 
 ```
+┌──────────────────────┐
+│      React Client    │
+│  UI / Player / Chat  │
+│  Context / Hooks     │
+└──────────┬───────────┘
+           │ Socket.IO
+┌──────────▼───────────┐
+│    Node.js Server    │
+│  Room & Playback     │
+│  State Management    │
+│  Clock Sync          │
+│  YouTube Search      │
+└──────────┬───────────┘
+           │
+┌──────────▼───────────┐
+│       YouTube        │
+│  IFrame Player API   │
+│  Search / Metadata   │
+└──────────────────────┘
+```
 
-The server is responsible for maintaining the authoritative playback state, while clients periodically report their playback status. Participants are only resynchronized when playback drift exceeds the allowed threshold, reducing unnecessary synchronization events.
+---
 
-# How It Works
+## How Synchronization Works
 
-## Room Creation
+YTSync does not broadcast `play()` / `pause()` commands and assume all browsers execute them simultaneously. Instead, the server maintains authoritative playback state and clients use synchronized time to determine where playback should be.
 
-- A unique room Id is generated.
-- The first participant automatically becomes the room admin.
-- Other users can join using the room Id.
+### 1. Clock Synchronization
+
+The client exchanges timestamps with the server:
+
+```
+t1 = client sends request
+t2 = server receives request
+t3 = server sends response
+t4 = client receives response
+```
+
+```
+RTT    = (t4 - t1) - (t3 - t2)
+offset = ((t2 - t1) + (t3 - t4)) / 2
+```
+
+The client estimates server time as:
+
+```
+serverTime ≈ Date.now() + clockOffset
+```
+
+Multiple measurements can be taken and compared by RTT — lower RTT samples give better estimates. Clock sync runs periodically during a session to reduce long-term drift.
+
+### 2. Playback State
+
+The server maintains:
+- Current video ID
+- Current playback position
+- Playing / paused state
+- Last sync timestamp
+- Playback control mode
+
+Clients use room state + estimated server time to calculate their expected playback position.
+
+### 3. Drift Correction
+
+Clients periodically report their playback status. If local playback drifts beyond **0.5 seconds**, the client corrects its position. Small differences from normal browser/network timing are tolerated without forcing a seek.
+
+---
+
+## Playback Control
+
+Each room has a configurable control mode:
+
+**`admin`** — Only the room admin controls playback and video changes. Useful for watch parties, classes, or presentations.
+
+**`everyone`** — All participants can control playback and change the video.
+
+The server validates actions according to the room's permission mode — not just the frontend UI.
+
+---
 
 ## YouTube Search
-Users can search for YouTube videos directly from the application instead of manually copying and pasting video URLs.
-```text
-            User types a search query
-                  │
-                  ▼
-            Debounced search
-                  │
-                  ▼
-            Backend API
-                  │
-                  ▼
-            YouTube.js / Innertube
-                  │
-                  ▼
-            YouTube search results
-                  │
-                  ▼
-            User selects a video
-                  │
-                  ▼
-            Video ID is sent to the room
-                  │
-                  ▼
-            All participants load the selected video
+
+Search runs on the backend via `youtubei.js`:
 
 ```
-## Synchronization
+User types query
+      │
+      ▼
+Debounced frontend request
+      │
+      ▼
+Backend (shared Innertube client)
+      ├── Search YouTube
+      ├── Ignore stale requests via request ID
+      └── Normalize and return results
+      │
+      ▼
+Frontend displays results
+```
 
-ytsync uses a **server-authoritative synchronization model**.
-
-- The room owner (admin) controls playback.
-- The server maintains the authoritative playback state.
-- Clients periodically report their playback status.
-- The server calculates playback drift for every participant.
-- Clients exceeding the allowed drift threshold are automatically resynchronized.
-- `serverTime` is used to compensate for network latency when calculating the expected playback position.
-
-This approach keeps playback synchronized even under unstable network conditions.
-
-## Automatic Reconnection
-
-After refreshing the page:
-
-- `clientId` is restored from Local Storage.
-- Username is restored automatically.
-- The user rejoins the existing room.
-- Room state is synchronized without creating duplicate users.
+Innertube is initialized once and shared. Request IDs prevent older, slower responses from overwriting newer results.
 
 ---
 
-# Project Structure
+## Reconnection & Room Management
 
-```text
-            ytsync
-            │
-            ├── frontend
-            │   ├── src
-            │   │   ├── api
-            │   │   ├── components
-            │   │   ├── context
-            │   │   ├── hooks
-            │   │   ├── pages
-            │   │   ├── services
-            │   │   ├── utils
-            │   │   └── ui
-            │   │
-            │   └── public
-            │
-            ├── backend
-            │   ├── server.js
-            │   ├── rooms.js
-            │   └── package.json
-            │
-            └── README.md
+When a socket disconnects:
+
+1. Client detects connection loss and updates UI
+2. Socket.IO attempts reconnection
+3. Client rejoins using its existing `clientId`
+4. Server updates the user's socket ID — no duplicate user created
+5. Client requests latest playback state
+6. Synchronization resumes
+
+---
+
+## Project Structure
+
+```
+      ytsync
+      │
+      ├── frontend
+      │   ├── src
+      │   │   ├── api
+      │   │   ├── components
+      │   │   ├── context
+      │   │   ├── hooks
+      │   │   ├── pages
+      │   │   ├── services
+      │   │   ├── utils
+      │   │   └── ui
+      │   │
+      │   └── public
+      │
+      ├── backend
+      │   ├── server.js
+      │   ├── rooms.js
+      │   └── package.json
+      │
+      └── README.md
 ```
 
 ---
 
-# Improvements Over Original Project
+## Improvements Over Original
 
-- Completely refactored project architecture
-- Modular React component structure
-- Extensive use of reusable custom hooks
-- Dedicated Socket.IO service layer
-- Improved Context API state management
-- Automatic room restoration after refresh
-- Persistent user identity using `clientId`
-- Server-authoritative synchronization algorithm
-- Playback drift detection and automatic correction
-- Improved synchronization under network latency
-- Direct YouTube video search
-- Debounced search requests
-- Video selection without manually pasting URLs
-- Reusable UI components with shadcn/ui
-- Better maintainability and scalability
+The main improvements focus on synchronization accuracy, reliability, room control, and maintainability:
+
+- Reworked synchronization around server-maintained room state
+- Added clock offset estimation using RTT timestamp measurements
+- Added periodic clock resynchronization during active sessions
+- Reduced drift threshold from ~1 second to 0.5 seconds
+- Added configurable `admin` / `everyone` playback permissions
+- Added `sync-request` for recovering playback state after reconnect
+- Added persistent `clientId` to prevent duplicate users
+- Added explicit leave-room handling and improved disconnect behavior
+- Refactored YouTube search around a shared `youtubei.js` initialization promise
+- Added stale request protection for async search results
+- Added defensive YouTube result mapping and error handling
+- Improved loading, connection, and sync state feedback throughout the UI
+- Upgraded to React 19 and current shadcn-compatible components
+- Improved component structure and responsive layout
 
 ---
 
-# Getting Started
-
-## Clone the repository
+## Getting Started
 
 ```bash
+# Clone
 git clone https://github.com/manish-850/ytsync.git
 cd ytsync
-```
 
-## Frontend
-
-```bash
+# Frontend
 cd frontend
+npm install
+npm run dev
+
+# Backend (separate terminal)
+cd backend
 npm install
 npm run dev
 ```
 
-## Backend
-
-```bash
-cd backend
-npm install
-npm start
-```
+Create `.env` files for both frontend and backend before starting.
 
 ---
 
-# Contributing
+## Deployment
 
-Contributions are welcome.
+```
+                 ┌─────────────────┐
+                 │     Browser     │
+                 └────────┬────────┘
+                          │
+             ┌────────────┴────────────┐
+             │                         │
+             ▼                         ▼
+       ┌───────────┐             ┌───────────┐
+       │  Vercel   │             │  Render   │
+       │ Frontend  │◄───────────►│  Backend  │
+       └───────────┘   Socket.IO └───────────┘
+                                      │
+                                      ▼
+                                  YouTube
+```
+---
 
-1. Fork the repository.
-2. Create a feature branch.
+## Contributing
 
 ```bash
-git checkout -b feature/my-feature
+git checkout -b feature/your-feature
+git commit -m "feat: add your feature"
+git push origin feature/your-feature
 ```
 
-3. Commit your changes.
-
-```bash
-git commit -m "feat: add awesome feature"
-```
-
-4. Push the branch.
-
-```bash
-git push origin feature/my-feature
-```
-
-5. Open a Pull Request.
-
-```bash
-git commit -m "feat: add awesome feature"
-```
-
-# Credits
-
-Original project: https://github.com/GitUtk/yt-cowatch
-
-This repository continues development with significant architectural improvements, redesigned synchronization logic, reusable UI components, and additional real-time features.
+Then open a pull request.
 
 ---
 
-# License
+## Credits
+
+Originally forked from [GitUtk/yt-cowatch](https://github.com/GitUtk/yt-cowatch). The synchronization system, reconnection handling, playback permissions, YouTube search, and overall architecture have been substantially reworked.
+
+---
+
+## License
 
 This project is licensed under the MIT License.
