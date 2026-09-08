@@ -127,14 +127,15 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("change-playback-author", () => {
+  socket.on("change-playback-author", ({ playbackControl }) => {
     const room = getOrCreateRoom(currentRoomId);
     const activeUser = room.users.get(currentClientId);
     if (activeUser && activeUser.isAdmin) {
-      if (room.playbackControl === "admin") room.playbackControl = "everyone";
-      else if (room.playbackControl === "everyone")
-        room.playbackControl = "admin";
-      io.to(currentRoomId).emit("room-update", getRoomData(room));
+      if (room.playbackControl === playbackControl) return;
+      room.playbackControl = playbackControl;
+      io.to(currentRoomId).emit("playback-control-change", {
+        playbackControl: room.playbackControl,
+      });
       io.to(currentRoomId).emit("chat-message", {
         sender: "System",
         text: `${currentUsername} changed the playback control.`,

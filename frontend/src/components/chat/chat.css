@@ -1,52 +1,16 @@
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-}
-
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-}
-
 .chat-messages::-webkit-scrollbar {
   display: none;
 }
 
-.message {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.message-sender {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--muted-foreground);
-}
-
 .message-text {
-  background: var(--foreground);
-  color: var(--background);
-  border-radius: 50px;
-  border: 1px solid var(--border);
   padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  display: inline-block;
-  max-width: fit-content;
-  word-break: break-word;
 }
 
-.message.sender {
+.sender {
   align-items: flex-end;
 }
 
-.message.receiver {
+.receiver {
   align-items: flex-start;
 
   .message-text {
@@ -55,7 +19,7 @@
   }
 }
 
-.message.system .message-text {
+.system .message-text {
   background: transparent;
   border: none;
   color: var(--foreground);
@@ -66,7 +30,6 @@
 
 .chat-input-form {
   padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border);
   display: flex;
   gap: 0.5rem;
 }
@@ -79,7 +42,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: "var(--muted-foreground)";
+  color: var(--muted-foreground);
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
 

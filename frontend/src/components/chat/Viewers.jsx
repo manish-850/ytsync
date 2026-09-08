@@ -1,5 +1,5 @@
 import useRoom from "@/hooks/room/useRoom";
-import UserCard from "./UserCard";
+import ViewerCard from "./ViewerCard";
 import { useEffect } from "react";
 import { socket } from "@/services/socket";
 const Users = () => {
@@ -22,7 +22,7 @@ const Users = () => {
   return (
     <div className="user-list flex-1">
       {users.map((user) => (
-        <UserCard user={user} key={user.id} />
+        <ViewerCard user={user} key={user.id} />
       ))}
     </div>
   );

@@ -1,6 +1,6 @@
-import { MessageCircle, User2Icon, Cog } from "lucide-react";
+import { MessageCircle, Users, Cog } from "lucide-react";
 import Chat from "../chat/Chat";
-import Users from "../chat/Users";
+import Viewers from "../chat/Viewers";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Controls from "../sidebar/Controls";
 
@@ -8,7 +8,7 @@ export default function Sidebar() {
   return (
     <>
       <div className="sidebar w-full lg:w-[28%] h-[60%] lg:h-full rounded border-2">
-        <Tabs defaultValue="chat" className="h-full">
+        <Tabs defaultValue="chat" className="h-full flex flex-col">
           <TabsList className="w-full sidebar-tabslist">
             <TabsTrigger
               className="cursor-pointer sidebar-tabstrigger"
@@ -21,7 +21,7 @@ export default function Sidebar() {
               className="cursor-pointer sidebar-tabstrigger"
               value="viewers"
             >
-              <User2Icon />
+              <Users />
               Viewers
             </TabsTrigger>
             <TabsTrigger
@@ -32,13 +32,13 @@ export default function Sidebar() {
               Controls
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="chat" className="px-2">
+          <TabsContent value="chat" className="flex-1 min-h-0">
             <Chat />
           </TabsContent>
           <TabsContent value="viewers">
-            <Users />
+            <Viewers />
           </TabsContent>
-          <TabsContent value="controls">
+          <TabsContent value="controls" className="flex-1 min-h-0">
             <Controls />
           </TabsContent>
         </Tabs>

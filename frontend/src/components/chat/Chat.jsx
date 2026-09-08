@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import { Send } from "lucide-react";
 import "./chat.css";
 import { handleSendMessage } from "../../services/socket";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import useRoom from "@/hooks/room/useRoom";
+import { Separator } from "../ui/separator";
 
 export default function Chat() {
   const [text, setText] = useState("");
@@ -24,25 +25,27 @@ export default function Chat() {
   };
 
   return (
-    <div className="chat-container">
-      <div className="chat-messages">
+    <div className="h-full flex flex-col min-h-0">
+      <div className="chat-messages flex-1 min-h-0 overflow-y-auto flex flex-col gap-2">
         {messages &&
           messages.map((msg, index) => {
             const isSystem = msg.sender === "System";
             const isSender = msg.sender === localStorage.getItem("username");
             return (
-              <div key={index} className={`message ${isSystem ? "system" : isSender ? "sender" : "receiver"}`}> 
-                {(!isSystem&&!isSender) && (
+              <div
+                key={index}
+                className={`message ${isSystem ? "system" : isSender ? "sender" : "receiver"}`}
+              >
+                {!isSystem && !isSender && (
                   <span className="message-sender">{msg.sender}</span>
                 )}
-                  <span className={`message-text`}>
-                    {msg.text}
-                  </span>
+                <span className={`message-text`}>{msg.text}</span>
               </div>
             );
           })}
         <div ref={messagesEndRef} />
       </div>
+      <Separator />
       <form onSubmit={handleSubmit} className="chat-input-form">
         <Input
           type="text"
