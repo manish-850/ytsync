@@ -1,4 +1,3 @@
-import "./videoPlayer.css";
 import VideoPlayer from "./VideoPlayer";
 import Navbar from "./Navbar";
 import useRoom from "@/hooks/room/useRoom";

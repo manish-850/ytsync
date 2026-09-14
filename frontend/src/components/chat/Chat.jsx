@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Send } from "lucide-react";
-import "./chat.css";
 import { handleSendMessage } from "../../services/socket";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
