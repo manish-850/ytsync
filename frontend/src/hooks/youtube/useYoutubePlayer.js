@@ -35,7 +35,7 @@ const useYoutubePlayer = ({
       if (isMuted && player.mute) player.mute();
       else if (!isMuted && player.unmute) player.unmute();
       if (roomData) {
-        syncToTargetTime();
+        syncToTargetTime({ action: "automatic" });
         setLoadingStage("ready");
         if (roomData.isPlaying) player.playVideo();
         else player.pauseVideo();
