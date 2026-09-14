@@ -42,8 +42,14 @@ export default function RoomControls() {
   }, [containerRef]);
 
   return (
-    <div ref={containerRef} className="relative flex-1 flex flex-col gap-5 lg:gap-10">
-      <form onSubmit={(e) => e.preventDefault()} className="url-input-group flex items-center justify-between w-full">
+    <div
+      ref={containerRef}
+      className="relative flex-1 flex flex-col gap-5 lg:gap-10"
+    >
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="url-input-group flex items-center justify-between w-full"
+      >
         <Input
           className="search-input w-full"
           type="text"
@@ -68,8 +74,8 @@ export default function RoomControls() {
             </div>
           )}
           {!isLoading &&
-            results?.map((video) => (
-              <VideoCard key={video.id} video={video} setIsOpen={setIsOpen} />
+            results?.map((video, idx) => (
+              <VideoCard key={idx} video={video} setIsOpen={setIsOpen} />
             ))}
         </div>
       )}

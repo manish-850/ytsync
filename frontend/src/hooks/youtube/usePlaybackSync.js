@@ -7,7 +7,7 @@ const usePlaybackSync = () => {
   const { playerRef } = usePlayer();
   const { roomDataRef, offsetRef } = useRoom();
 
-  const syncToTargetTime = useCallback(() => {
+  const syncToTargetTime = useCallback(({ action }) => {
     const player = playerRef.current;
     const room = roomDataRef.current;
     const offset = offsetRef.current;
@@ -24,7 +24,11 @@ const usePlaybackSync = () => {
     const currentTime = player.getCurrentTime();
     const drift = targetTime - currentTime;
 
-    if (Math.abs(drift) > 0.1) {
+    if (Math.abs(drift) > 0.1 && action === "automatic") {
+      console.log("[handle sync fired] action : ", action);
+      player.seekTo(targetTime, true);
+    } else if (Math.abs(drift) > 0.05 && action === "manual") {
+      console.log("[handle sync fired] action : ", action);
       player.seekTo(targetTime, true);
     }
   }, []);
@@ -33,11 +37,10 @@ const usePlaybackSync = () => {
     if (!socket) return;
 
     const handleSync = ({ isPlaying }) => {
-      console.log("handle sync fired");
       const player = playerRef.current;
       if (!player || !player.getPlayerState) return;
       const playerState = player.getPlayerState();
-      syncToTargetTime();
+      syncToTargetTime({ action: "automatic" });
       if (isPlaying) {
         if (playerState !== window.YT.PlayerState.PLAYING) {
           player.playVideo();

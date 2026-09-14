@@ -12,13 +12,19 @@ const Controls = () => {
   const { handleClick } = useUpdatePlaybackControl();
 
   return (
-    <div style={{ paddingTop: "1rem" }} className="flex flex-col gap-4 w-full">
-      <div className="flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-3 w-full">
+      <div className="flex flex-col gap-2">
         <p className="uppercase opacity-50 tracking-widest">Manual sync</p>
-        <Button onClick={syncToTargetTime}>Sync</Button>
+        <Button
+          onClick={() => {
+            syncToTargetTime({ action: "manual" });
+          }}
+        >
+          Sync
+        </Button>
       </div>
       <Separator className="my-2" />
-      <div className="flex flex-col gap-2 p-2 w-full">
+      <div className="flex flex-col gap-2 w-full">
         <p className="uppercase opacity-50 tracking-widest">
           Playback Permission
         </p>
