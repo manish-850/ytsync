@@ -14,8 +14,8 @@ const JoinPage = () => {
 
   if (!isLoading)
     return (
-      <div className="join-container">
-        <div className="form-wrapper">
+      <div className="flex flex-col items-center justify-center flex-1">
+        <div className="bg-primary-foreground border overflow-hidden rounded-2xl flex flex-col items-center justify-center p-8 gap-2 max-w-100 min-h-75">
           <Form />
           <ProjectInfo />
         </div>

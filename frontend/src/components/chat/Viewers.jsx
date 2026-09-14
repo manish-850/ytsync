@@ -20,7 +20,7 @@ const Users = () => {
     };
   }, []);
   return (
-    <div className="user-list flex-1">
+    <div className="user-list flex-1 flex flex-col gap-[0.8rem] py-1">
       {users.map((user) => (
         <ViewerCard user={user} key={user.id} />
       ))}

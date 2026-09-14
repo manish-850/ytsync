@@ -1,4 +1,3 @@
-import "./form.css";
 import { Button } from "@/components/ui/button";
 import { InputField } from "./InputField";
 import useRoom from "@/hooks/room/useRoom";
@@ -8,7 +7,7 @@ const Form = () => {
   const { username, setUsername, roomId, setRoomId } = useRoom();
   const { handleJoin, handleCreateRoom } = useForm();
   return (
-    <form onSubmit={handleJoin} className="card">
+    <form onSubmit={handleJoin} className="w-full flex flex-col gap-6">
       <h1>Join Room</h1>
       <InputField
         type="text"
@@ -17,7 +16,7 @@ const Form = () => {
         placeholder="Enter name (optional)"
         label="Username"
       />
-      <div className="input-group">
+      <div className="flex items-end gap-2">
         <InputField
           type="text"
           value={roomId}
@@ -26,7 +25,7 @@ const Form = () => {
           label="Room Id"
         />
         <Button
-          className={"genrateBtn"}
+          className="px-2"
           type="button"
           onClick={handleCreateRoom}
           variant="secondary"

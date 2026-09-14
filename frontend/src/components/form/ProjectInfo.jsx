@@ -14,17 +14,18 @@ const ProjectInfo = () => {
     })();
   }, []);
   return (
-    <div className="project-info">
-      <div className="star">
+    <div className="w-full flex items-stretch justify-center py-4">
+      <div className="flex-1 flex items-center min-h-6 justify-end gap-1 pr-4">
         <Star />
         <small>{stars}</small>
       </div>
       <Separator orientation="vertical" />
-      <div className="github">
+      <div className="flex-1 flex items-center min-h-6 pl-4">
         <Link
           target="_blank"
           rel="noopener noreferrer"
           to="https://github.com/manish-850/ytsync"
+          className="flex items-center"
         >
           <Github />
         </Link>

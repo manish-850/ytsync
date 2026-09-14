@@ -1,5 +1,4 @@
 import { Spinner } from "../ui/spinner";
-import "./loading.css";
 
 export default function Loading({ stage }) {
   const messages = {
@@ -23,7 +22,7 @@ export default function Loading({ stage }) {
   const { title, subtitle } = messages[stage];
 
   return (
-    <div className="loading-overlay">
+    <div className="fixed inset-0 bg-background flex flex-col justify-center items-center z-999">
       <Spinner className="size-8" />
       <h4>{title}</h4>
       <p>{subtitle}</p>
