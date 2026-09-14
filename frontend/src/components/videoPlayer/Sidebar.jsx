@@ -7,7 +7,7 @@ import Controls from "../sidebar/Controls";
 export default function Sidebar() {
   return (
     <>
-      <div className="sidebar w-full lg:w-[28%] h-[60%] lg:h-full rounded border-2">
+      <div className="sidebar w-full lg:w-[28%] h-[60%] lg:h-full rounded border-2 bg-sidebar px-4 pt-6">
         <Tabs defaultValue="chat" className="h-full flex flex-col">
           <TabsList className="w-full sidebar-tabslist">
             <TabsTrigger

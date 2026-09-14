@@ -50,12 +50,13 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
       <Separator />
-      <form onSubmit={handleSubmit} className="chat-input-form">
+      <form onSubmit={handleSubmit} className="px-6 py-4 flex gap-2">
         <Input
           type="text"
           placeholder="Type a message..."
           value={text}
           onChange={(e) => setText(e.target.value)}
+          className="flex-1"
         />
         <Button type="submit" variant="default" size="icon">
           <Send size={18} />
