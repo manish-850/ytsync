@@ -47,13 +47,13 @@ const useYoutubePlayer = ({
       playerRef.current = new window.YT.Player(iframeId, {
         videoId,
         playerVars: {
-          controls: isAdmin ? 1 : 0,
-          disablekb: isAdmin ? 0 : 1,
-          rel: 0,
-          modestbranding: 1,
-          autoplay: 1,
+          controls: 1,
+          disablekb: 1,
+          autoplay: 0,
+          playsinline: 1,
           enablejsapi: 1,
           origin: window.location.origin,
+          rel: 0,
         },
         events: {
           onReady: (event) => {
@@ -64,14 +64,10 @@ const useYoutubePlayer = ({
           },
           onStateChange: (event) => {
             console.log("state change", event.target.getCurrentTime());
-            if (isAdmin) {
-              if (handlePlaybackControl) {
-                if (event.data === 1) {
-                  handlePlaybackControl(true, event.target.getCurrentTime());
-                } else if (event.data === 2) {
-                  handlePlaybackControl(false, event.target.getCurrentTime());
-                }
-              }
+            if (isAdmin && event.data === 1) {
+              handlePlaybackControl(true, event.target.getCurrentTime());
+            } else if (isAdmin && event.data === 2) {
+              handlePlaybackControl(false, event.target.getCurrentTime());
             }
           },
         },

@@ -6,8 +6,11 @@ export function getOrCreateRoom(roomId) {
       id: roomId,
       users: new Map(),
       currentVideoId: "dQw4w9WgXcQ",
+      videoTitle: null,
+      videoThumbnail: null,
       currentTime: 0,
       playbackControl: "admin",
+      visibility: "public",
       isPlaying: false,
       serverTime: Date.now(),
     });
@@ -75,16 +78,19 @@ export function getRoomData(room) {
     currentTime: room.currentTime,
     isPlaying: room.isPlaying,
     playbackControl: room.playbackControl,
+    visibility: room.visibility,
     serverTime: room.serverTime,
   };
 }
 
-export function updateRoomVideo(roomId, videoId) {
+export function updateRoomVideo(roomId, videoId, videoThumbnail, videoTitle) {
   const room = rooms.get(roomId);
   if (!room) return null;
   room.currentVideoId = videoId;
   room.currentTime = 0;
   room.isPlaying = false;
+  room.videoTitle = videoTitle;
+  room.videoThumbnail = videoThumbnail;
   room.serverTime = Date.now();
   return room;
 }
@@ -102,4 +108,16 @@ export function getExpectedRoomTime(room) {
   if (!room.isPlaying) return room.currentTime;
 
   return room.currentTime + (Date.now() - room.serverTime) / 1000;
+}
+
+export function getPublicRoomsData() {
+  return Array.from(rooms.values()).map((room) => {
+    if (room.visibility === "public")
+      return {
+        id: room.id,
+        users: room.users.size,
+        thumbnail: room.videoThumbnail,
+        title: room.videoTitle,
+      };
+  });
 }

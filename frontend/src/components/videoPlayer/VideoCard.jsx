@@ -4,16 +4,16 @@ import { getSocket } from "@/services/socket";
 const VideoCard = ({ video, setIsOpen }) => {
   const { setVideoId } = useRoom();
   const socket = getSocket();
-  const handleChangeVideo = (videoId) => {
+  const handleChangeVideo = (videoId, videoThumbnail, videoTitle) => {
     if (socket) {
       console.log(videoId);
-      socket.emit("change-video", { videoId });
+      socket.emit("change-video", { videoId, videoThumbnail, videoTitle });
     }
   };
   const handleClick = () => {
     if (!video.id) return;
     setVideoId(video.id);
-    handleChangeVideo(video.id);
+    handleChangeVideo(video.id, video.thumbnail, video.title);
     setIsOpen(false);
   };
   return (
@@ -31,7 +31,9 @@ const VideoCard = ({ video, setIsOpen }) => {
       </div>
       <div className="text-container flex-1 min-w-0 flex flex-col h-full gap-2 overflow-hidden">
         <h5 className="text-[10px] line-clamp-3">{video.title}</h5>
-        <p className="text-[10px] text-muted-foreground truncate">{video.channel}</p>
+        <p className="text-[10px] text-muted-foreground truncate">
+          {video.channel}
+        </p>
       </div>
     </div>
   );

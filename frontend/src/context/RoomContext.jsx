@@ -15,6 +15,7 @@ const RoomContext = ({ children }) => {
   const [videoId, setVideoId] = useState("");
   const [users, setUsers] = useState([]);
   const [playbackControl, setPlaybackControl] = useState("");
+  const [visibility, setVisibility] = useState("");
   return (
     <RoomDataContext.Provider
       value={{
@@ -39,6 +40,8 @@ const RoomContext = ({ children }) => {
         setVideoId,
         playbackControl,
         setPlaybackControl,
+        visibility,
+        setVisibility,
       }}
     >
       {children}
