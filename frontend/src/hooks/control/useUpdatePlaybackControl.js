@@ -5,7 +5,7 @@ import useRoom from "../room/useRoom";
 const useUpdatePlaybackControl = () => {
   const { playbackControl, setPlaybackControl, isAdmin, roomDataRef } =
     useRoom();
-  const handleClick = useCallback(
+  const handlePlayback = useCallback(
     (target) => {
       if (!isAdmin) return;
       if (target === playbackControl) return;
@@ -31,7 +31,7 @@ const useUpdatePlaybackControl = () => {
   }, []);
 
   return {
-    handleClick,
+    handlePlayback,
   };
 };
 

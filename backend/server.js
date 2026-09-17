@@ -11,6 +11,7 @@ import {
   updateRoomPlayback,
   getOrCreateRoom,
   getExpectedRoomTime,
+  getPublicRoomsData,
 } from "./rooms.js";
 import { fetchSearchResults } from "./youtube.js";
 
@@ -95,7 +96,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("change-video", ({ videoId }) => {
+  socket.on("change-video", ({ videoId, videoThumbnail, videoTitle }) => {
     if (!currentRoomId) return;
     const room = getOrCreateRoom(currentRoomId);
     const activeUser = room.users.get(currentClientId);
@@ -103,7 +104,7 @@ io.on("connection", (socket) => {
       activeUser &&
       (activeUser.isAdmin || room.playbackControl === "everyone")
     ) {
-      updateRoomVideo(currentRoomId, videoId);
+      updateRoomVideo(currentRoomId, videoId, videoThumbnail, videoTitle);
       io.to(currentRoomId).emit("room-update", getRoomData(room));
       io.to(currentRoomId).emit("chat-message", {
         sender: "System",
@@ -141,6 +142,27 @@ io.on("connection", (socket) => {
         text: `${currentUsername} changed the playback control.`,
       });
     }
+  });
+
+  socket.on("change-visibility", ({ visibility }) => {
+    const room = getOrCreateRoom(currentRoomId);
+    const activeUser = room.users.get(currentClientId);
+    if (activeUser && activeUser.isAdmin) {
+      if (room.visibility === visibility) return;
+      room.visibility = visibility;
+      io.to(currentRoomId).emit("visibility-changed", {
+        visibility: room.visibility,
+      });
+      io.to(currentRoomId).emit("chat-message", {
+        sender: "System",
+        text: `${currentUsername} changed the visibilty to ${visibility}.`,
+      });
+    }
+  });
+
+  socket.on("get-public-rooms-data", () => {
+    const data = getPublicRoomsData();
+    socket.emit("public-rooms-data", data);
   });
 
   socket.on("report-status", ({ videoId, isPlaying, currentTime }) => {

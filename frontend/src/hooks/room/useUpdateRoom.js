@@ -13,6 +13,7 @@ const useUpdateRoom = ({ clientId, setLoadingStage }) => {
     setVideoId,
     setUsers,
     setPlaybackControl,
+    setVisibility,
   } = useRoom();
   const { roomId } = useParams();
 
@@ -28,7 +29,8 @@ const useUpdateRoom = ({ clientId, setLoadingStage }) => {
         setIsJoined(true);
         setRoomId(data?.id);
         setVideoId(data?.currentVideoId);
-        setPlaybackControl(data?.playbackControl)
+        setPlaybackControl(data?.playbackControl);
+        setVisibility(data?.visibility);
         setLoadingStage((prev) => {
           if (prev === "ready") return prev;
           return "player";
