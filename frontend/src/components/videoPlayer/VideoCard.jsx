@@ -6,7 +6,7 @@ const VideoCard = ({ video, setIsOpen }) => {
   const socket = getSocket();
   const handleChangeVideo = (videoId, videoThumbnail, videoTitle) => {
     if (socket) {
-      console.log(videoId);
+      console.log("[Video chnaged]", videoId);
       socket.emit("change-video", { videoId, videoThumbnail, videoTitle });
     }
   };

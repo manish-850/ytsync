@@ -14,7 +14,7 @@ export default function RoomControls() {
 
   const debouncedSearch = useMemo(() => {
     return debounce(async (searchQuery) => {
-      console.log("[Serach fired] ", searchQuery);
+      console.log("[Search fired] ", searchQuery);
       if (!searchQuery.trim()) {
         setResults([]);
         return;

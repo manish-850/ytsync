@@ -25,10 +25,10 @@ const usePlaybackSync = () => {
     const drift = targetTime - currentTime;
 
     if (Math.abs(drift) > 0.1 && action === "automatic") {
-      console.log("[handle sync fired] action : ", action);
+      console.log("[Handle sync] action : ", action);
       player.seekTo(targetTime, true);
     } else if (Math.abs(drift) > 0.05 && action === "manual") {
-      console.log("[handle sync fired] action : ", action);
+      console.log("[Handle sync] action : ", action);
       player.seekTo(targetTime, true);
     }
   }, []);

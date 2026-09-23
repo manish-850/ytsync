@@ -43,7 +43,7 @@ const useYoutubePlayer = ({
     };
 
     const initPlayer = () => {
-      console.log("Creating player");
+      console.log("[Creating player]");
       playerRef.current = new window.YT.Player(iframeId, {
         videoId,
         playerVars: {
@@ -57,13 +57,13 @@ const useYoutubePlayer = ({
         },
         events: {
           onReady: (event) => {
-            console.log("yt ready : ", event.data);
+            console.log("[Yt ready]", event.data);
             playerRef.current = event.target;
             setLoadingStage("syncing");
             handlePlayerReady();
           },
           onStateChange: (event) => {
-            console.log("state change", event.target.getCurrentTime());
+            console.log("[State change]", event.target.getCurrentTime());
             if (isAdmin && event.data === 1) {
               handlePlaybackControl(true, event.target.getCurrentTime());
             } else if (isAdmin && event.data === 2) {
@@ -97,7 +97,7 @@ const useYoutubePlayer = ({
     return () => {
       if (checkInterval) clearInterval(checkInterval);
       if (playerRef.current && playerRef.current.destroy) {
-        console.log("Destroying player");
+        console.log("[Destroying player]");
         playerRef.current.destroy();
       }
     };

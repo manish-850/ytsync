@@ -28,7 +28,7 @@ const useClockSync = ({loadingStage, setLoadingStage}) => {
         offsetRef.current = offset;
       }
 
-      console.log({
+      console.log("[Clock sync]",{
         rtt,
         offset,
       });

@@ -18,7 +18,7 @@ const useReconnection = ({
     const handleDisconnect = (reason) => {
       setIsOnline(false);
 
-      console.log("Socket disconnected:", reason);
+      console.log("[Socket disconnected]", reason);
     };
 
     const handleConnect = () => {
@@ -29,7 +29,7 @@ const useReconnection = ({
         setLoadingStage("ready");
       }
       hasConnectedRef.current = true;
-      console.log("Socket connected");
+      console.log("[Socket connected]");
     };
 
     socket.on("disconnect", handleDisconnect);

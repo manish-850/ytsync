@@ -21,7 +21,7 @@ const useUpdateRoom = ({ clientId, setLoadingStage }) => {
     const handleRoomUpdate = (data) => {
       const currentUser = data.users.find((user) => user.clientId === clientId);
       if (currentUser) {
-        console.log("Room data : ", data);
+        console.log("[Room data] ", data);
         roomDataRef.current = data;
         setUsers(data.users);
         setIsAdmin(currentUser?.isAdmin);
