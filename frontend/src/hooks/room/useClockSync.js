@@ -1,8 +1,8 @@
 import { getSocket } from "@/services/socket";
 import { useEffect, useCallback } from "react";
 import useRoom from "./useRoom";
-const useClockSync = ({loadingStage, setLoadingStage}) => {
-  const { offsetRef, rttRef } = useRoom();
+const useClockSync = ({ loadingStage, setLoadingStage }) => {
+  const { offsetRef, rttRef, setRtt, setOffset } = useRoom();
   const previousRtt = rttRef.current;
   const syncClock = useCallback(() => {
     const socket = getSocket();
@@ -25,10 +25,12 @@ const useClockSync = ({loadingStage, setLoadingStage}) => {
 
       if (rtt <= 200 && (previousRtt === 0 || rtt <= previousRtt * 3)) {
         rttRef.current = rtt;
+        setRtt(rtt);
         offsetRef.current = offset;
+        setOffset(offset);
       }
 
-      console.log("[Clock sync]",{
+      console.log("[Clock sync]", {
         rtt,
         offset,
       });

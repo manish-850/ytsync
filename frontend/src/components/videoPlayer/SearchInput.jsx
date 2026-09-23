@@ -5,7 +5,7 @@ import { fetchSearchResults } from "@/api/searchResult";
 import { debounce } from "@/utils/debounce";
 import { Spinner } from "../ui/spinner";
 
-export default function RoomControls() {
+export default function SearchInput() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -64,10 +64,7 @@ export default function RoomControls() {
         />
       </form>
       {isOpen && (
-        <div
-          style={{ padding: "5px" }}
-          className="search-result-container flex flex-col items-center gap-2 overflow-y-auto absolute bg-zinc-900 h-100 w-[80vw] translate-x-[-50%] left-[50%] lg:w-full top-[120%] z-99 rounded"
-        >
+        <div className="search-result-container flex flex-col items-center gap-2 overflow-y-auto absolute bg-zinc-900 h-100 w-[80vw] translate-x-[-50%] left-[50%] lg:w-full top-[120%] z-99 rounded p-1">
           {isLoading && (
             <div className="flex items-center justify-center h-full w-full">
               <Spinner className="size-8" />

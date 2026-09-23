@@ -27,7 +27,7 @@ const ProjectInfo = () => {
           to="https://github.com/manish-850/ytsync"
           className="flex items-center"
         >
-          <Github />
+          <Github className="h-5 w-5" />
         </Link>
       </div>
     </div>

@@ -5,10 +5,7 @@ import useRoom from "@/hooks/room/useRoom";
 const VideoContainer = ({ setLoadingStage }) => {
   const { videoId } = useRoom();
   return (
-    <div
-      style={{ padding: "1.5rem 1rem", paddingTop: "1.5rem" }}
-      className="flex flex-col gap-6 lg:gap-10 lg:w-[72%] h-[60%] lg:h-full rounded "
-    >
+    <div className="flex flex-col lg:gap-4 lg:w-[72%] h-[60%] lg:h-full p-4">
       <Navbar />
       {videoId && <VideoPlayer setLoadingStage={setLoadingStage} />}
     </div>

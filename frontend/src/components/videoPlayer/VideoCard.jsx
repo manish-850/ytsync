@@ -6,7 +6,7 @@ const VideoCard = ({ video, setIsOpen }) => {
   const socket = getSocket();
   const handleChangeVideo = (videoId, videoThumbnail, videoTitle) => {
     if (socket) {
-      console.log("[Video chnaged]", videoId);
+      console.log("[Video changed]", videoId);
       socket.emit("change-video", { videoId, videoThumbnail, videoTitle });
     }
   };
@@ -19,10 +19,9 @@ const VideoCard = ({ video, setIsOpen }) => {
   return (
     <div
       onClick={handleClick}
-      className="w-full h-20 hover:bg-zinc-800 shrink-0 flex gap-4 justify-between rounded cursor-pointer"
-      style={{ padding: "5px" }}
+      className="w-full lg:h-30 h-20 hover:bg-zinc-800 shrink-0 flex gap-4 justify-between rounded cursor-pointer p-1"
     >
-      <div className="thumbnail-container w-[30%] lg:w-[40%] h-full rounded overflow-hidden shrink-0">
+      <div className="thumbnail-container w-[30%] lg:w-[30%] h-full rounded overflow-hidden shrink-0">
         <img
           className="w-full h-full object-cover"
           src={video.thumbnail}
