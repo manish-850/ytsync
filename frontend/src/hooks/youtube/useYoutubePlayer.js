@@ -57,7 +57,7 @@ const useYoutubePlayer = ({
         },
         events: {
           onReady: (event) => {
-            console.log("[Yt ready]", event.data);
+            console.log("[Yt ready]", event.target);
             playerRef.current = event.target;
             setLoadingStage("syncing");
             handlePlayerReady();

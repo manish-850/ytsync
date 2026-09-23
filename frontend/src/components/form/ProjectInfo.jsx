@@ -5,7 +5,7 @@ import Github from "../svg/Github";
 import { Separator } from "../ui/separator";
 
 const ProjectInfo = () => {
-  const [stars, setStars] = useState(3);
+  const [stars, setStars] = useState(4);
   useEffect(() => {
     (async () => {
       const res = await fetch("https://api.github.com/repos/manish-850/ytsync");

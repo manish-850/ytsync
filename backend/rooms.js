@@ -120,6 +120,7 @@ export function getPublicRoomsData() {
         users: room.users.size,
         thumbnail: room.videoThumbnail,
         title: room.videoTitle,
+        isPlaying: room.isPlaying,
       };
   });
 }
