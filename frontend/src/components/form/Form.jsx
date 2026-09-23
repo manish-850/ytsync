@@ -24,13 +24,7 @@ const Form = () => {
           placeholder="Room Id"
           label="Room Id"
         />
-        <Button
-          className="px-2"
-          type="button"
-          onClick={handleCreateRoom}
-          variant="secondary"
-          size="lg"
-        >
+        <Button type="button" onClick={handleCreateRoom} variant="secondary">
           Generate
         </Button>
       </div>

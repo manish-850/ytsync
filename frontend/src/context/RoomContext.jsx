@@ -8,6 +8,8 @@ const RoomContext = ({ children }) => {
   const roomDataRef = useRef(null);
   const offsetRef = useRef(0);
   const rttRef = useRef(Infinity);
+  const [offset, setOffset] = useState();
+  const [rtt, setRtt] = useState();
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +44,10 @@ const RoomContext = ({ children }) => {
         setPlaybackControl,
         visibility,
         setVisibility,
+        offset,
+        setOffset,
+        rtt,
+        setRtt,
       }}
     >
       {children}

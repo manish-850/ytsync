@@ -18,7 +18,7 @@ export default function VideoPlayer({ setLoadingStage }) {
   useReportStatus();
 
   return (
-    <div className="min-h-[40%] shrink-0 w-full rounded border-2 relative flex-1 overflow-hidden">
+    <div className="min-h-[40%] shrink-0 w-full rounded relative flex-1 overflow-hidden">
       <div id={iframeId}></div>
     </div>
   );

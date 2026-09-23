@@ -7,27 +7,18 @@ import Controls from "../sidebar/Controls";
 export default function Sidebar() {
   return (
     <>
-      <div className="sidebar w-full lg:w-[28%] h-[60%] lg:h-full rounded border-2 bg-sidebar px-4 pt-6">
+      <div className="w-full lg:w-[28%] h-[60%] lg:h-full bg-sidebar px-4 pt-6">
         <Tabs defaultValue="chat" className="h-full flex flex-col">
-          <TabsList className="w-full sidebar-tabslist">
-            <TabsTrigger
-              className="cursor-pointer sidebar-tabstrigger"
-              value="chat"
-            >
+          <TabsList className="w-full">
+            <TabsTrigger className="cursor-pointer" value="chat">
               <MessageCircle />
               Chat
             </TabsTrigger>
-            <TabsTrigger
-              className="cursor-pointer sidebar-tabstrigger"
-              value="viewers"
-            >
+            <TabsTrigger className="cursor-pointer" value="viewers">
               <Users />
               Viewers
             </TabsTrigger>
-            <TabsTrigger
-              className="cursor-pointer sidebar-tabstrigger"
-              value="controls"
-            >
+            <TabsTrigger className="cursor-pointer" value="controls">
               <Cog />
               Controls
             </TabsTrigger>

@@ -17,10 +17,15 @@ const JoinPage = () => {
 
   useEffect(() => {
     const socket = getSocket();
+    const handlePublicRooms = (data) => {
+      setPublicRooms(data.filter(Boolean));
+      console.log(data);
+    };
+    socket.on("public-rooms-data", handlePublicRooms);
     socket.emit("get-public-rooms-data");
-    socket.on("public-rooms-data", (data) => {
-      setPublicRooms(data);
-    });
+    return () => {
+      socket.off("public-rooms-data", handlePublicRooms);
+    };
   }, []);
 
   if (!isLoading)
@@ -34,18 +39,22 @@ const JoinPage = () => {
           <div className="w-100 p-2 uppercase text-neutral-500 font-bold">
             <p className="text-sm">Public rooms</p>
           </div>
-          {publicRooms.map((data, idx) => {
-            if (data)
-              return (
-                <RoomCard
-                  key={idx}
-                  title={data.title}
-                  thumbnail={data.thumbnail}
-                  id={data.id}
-                  users={data.users}
-                />
-              );
-          })}
+          {publicRooms.length === 0 ? (
+            <p className="text-neutral-500 mt-5 text-sm">
+              No public rooms found
+            </p>
+          ) : (
+            publicRooms.map((data) => (
+              <RoomCard
+                key={data.id}
+                title={data.title}
+                thumbnail={data.thumbnail}
+                id={data.id}
+                users={data.users}
+                isPlaying={data.isPlaying}
+              />
+            ))
+          )}
         </div>
       </div>
     );

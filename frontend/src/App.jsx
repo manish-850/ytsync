@@ -1,13 +1,16 @@
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function App() {
   return (
-  <>
-  <AppRoutes/>
-  <Toaster/>
-  <Analytics/>
-  </>
+    <>
+      <TooltipProvider>
+        <AppRoutes />
+      </TooltipProvider>
+      <Toaster />
+      <Analytics />
+    </>
   );
 }

@@ -8,7 +8,7 @@ const useVideoLoader = (setLoadingStage) => {
   useEffect(() => {
     if (!roomDataRef.current) return;
     if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
-      console.log("Loading video:", videoId);
+      console.log("[Loading video]", videoId);
       playerRef.current.loadVideoById({ videoId });
       setLoadingStage("ready")
     }

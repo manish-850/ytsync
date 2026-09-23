@@ -10,6 +10,8 @@ import useInitUsername from "@/hooks/room/useInitUsername";
 import useLeaveRoom from "@/hooks/room/useLeaveRoom";
 import useClockSync from "@/hooks/room/useClockSync";
 import useReconnection from "@/hooks/room/useReconnection";
+import RoomInfo from "@/components/videoPlayer/RoomInfo";
+import { Separator } from "@/components/ui/separator";
 
 const RoomPage = () => {
   const [loadingStage, setLoadingStage] = useState("connecting");
@@ -33,10 +35,14 @@ const RoomPage = () => {
   useReconnection({ joinRoom, updateRoom, leaveRoom, setLoadingStage });
 
   return (
-    <div className="flex flex-col lg:flex-row gap-5 h-screen w-full justify-between">
-      <VideoContainer setLoadingStage={setLoadingStage} />
-      <Sidebar />
-      {loadingStage !== "ready" && <Loading stage={loadingStage} />}
+    <div className="flex flex-col h-screen">
+      <RoomInfo />
+      <Separator />
+      <div className="flex flex-col lg:flex-row h-[97%] w-full justify-between">
+        <VideoContainer setLoadingStage={setLoadingStage} />
+        <Sidebar />
+        {loadingStage !== "ready" && <Loading stage={loadingStage} />}
+      </div>
     </div>
   );
 };

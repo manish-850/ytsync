@@ -36,7 +36,6 @@ app.get("/health", (req, res) => {
 
 app.get("/api/search", async (req, res) => {
   const { q } = req.query;
-  console.log("api hit : ", q);
   const results = await fetchSearchResults(q);
   res.status(200).json({ status: "ok", results });
 });
@@ -86,6 +85,8 @@ io.on("connection", (socket) => {
       });
     }
     io.to(roomId).emit("room-update", getRoomData(room));
+    const data = getPublicRoomsData();
+    io.emit("public-rooms-data", data);
   });
 
   socket.on("send-message", ({ text }) => {
@@ -110,6 +111,8 @@ io.on("connection", (socket) => {
         sender: "System",
         text: `${currentUsername} changed the video.`,
       });
+      const data = getPublicRoomsData();
+      io.emit("public-rooms-data", data);
     }
   });
 
@@ -125,6 +128,8 @@ io.on("connection", (socket) => {
         serverTime: room.serverTime,
       });
       io.to(currentRoomId).emit("room-update", getRoomData(room));
+      const data = getPublicRoomsData();
+      io.emit("public-rooms-data", data);
     }
   });
 
@@ -157,12 +162,14 @@ io.on("connection", (socket) => {
         sender: "System",
         text: `${currentUsername} changed the visibilty to ${visibility}.`,
       });
+      const data = getPublicRoomsData();
+      io.emit("public-rooms-data", data);
     }
   });
 
   socket.on("get-public-rooms-data", () => {
     const data = getPublicRoomsData();
-    socket.emit("public-rooms-data", data);
+    io.emit("public-rooms-data", data);
   });
 
   socket.on("report-status", ({ videoId, isPlaying, currentTime }) => {
@@ -223,6 +230,8 @@ io.on("connection", (socket) => {
         sender: "System",
         text: `${currentUsername} left the room.`,
       });
+      const data = getPublicRoomsData();
+      io.emit("public-rooms-data", data);
     }
   });
 });

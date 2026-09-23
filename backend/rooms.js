@@ -6,8 +6,10 @@ export function getOrCreateRoom(roomId) {
       id: roomId,
       users: new Map(),
       currentVideoId: "dQw4w9WgXcQ",
-      videoTitle: null,
-      videoThumbnail: null,
+      videoTitle:
+        "Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)",
+      videoThumbnail:
+        "https://i.ytimg.com/vi/dQw4w9WgXcQ/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAfut6ib46TKYWnNm5PxBrcX8HLWg",
       currentTime: 0,
       playbackControl: "admin",
       visibility: "public",
@@ -118,6 +120,7 @@ export function getPublicRoomsData() {
         users: room.users.size,
         thumbnail: room.videoThumbnail,
         title: room.videoTitle,
+        isPlaying: room.isPlaying,
       };
   });
 }

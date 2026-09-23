@@ -23,7 +23,6 @@ const UserCard = ({ user }) => {
   return (
     <div
       className={`user-card flex justify-between bg-zinc-800 h-12 w-full border  overflow-y-auto rounded-lg items-center px-2`}
-      style={{ padding: "0 0.5rem" }}
     >
       <div className="user-info flex items-center gap-1.5">
         <div className="flex h-8 w-8 items-center justify-center rounded-full border bg-lime-900">
@@ -33,23 +32,24 @@ const UserCard = ({ user }) => {
       </div>
       <div className="badge flex gap-2">
         <Badge
-          className={`${bgColor} ${textColor}`}
-          style={{ padding: "0.2rem 0.5rem" }}
+          className={`${bgColor} ${textColor} py-[0.2rem] px-2 lg:text-[10px] text-xs`}
         >
           {driftMs + " ms"}
         </Badge>
         {user.isAdmin && (
           <Badge
-            style={{ padding: "0.2rem 0.5rem" }}
-            className={"bg-pink-400/20 text-pink-400"}
+            className={
+              "bg-pink-400/20 text-pink-400 py-[0.2rem] px-2 lg:text-[10px] text-xs"
+            }
           >
             Admin
           </Badge>
         )}
         {user.clientId === clientId && (
           <Badge
-            style={{ padding: "0.2rem 0.5rem" }}
-            className={"bg-blue-400/20 text-blue-400"}
+            className={
+              "bg-blue-400/20 text-blue-400 py-[0.2rem] px-2 lg:text-[10px] text-xs"
+            }
           >
             You
           </Badge>
