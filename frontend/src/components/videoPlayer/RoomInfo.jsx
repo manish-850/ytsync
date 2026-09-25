@@ -11,7 +11,7 @@ const RoomInfo = () => {
     () => users.find((u) => u.clientId === clientId),
     [users, clientId],
   );
-  const drift = Math.round(user?.status?.drift ?? 0);
+  const drift = Math.round((user?.status?.drift ?? 0) * 1000);
   return (
     <div className="w-full h-[4%] flex items-center text-xs text-neutral-400 px-4 py-1">
       <div className="h-full flex items-center gap-4">

@@ -1,24 +1,7 @@
 import useRoom from "@/hooks/room/useRoom";
 import ViewerCard from "./ViewerCard";
-import { useEffect } from "react";
-import { socket } from "@/services/socket";
 const Users = () => {
-  const { users, setUsers } = useRoom();
-  useEffect(() => {
-    const handleStatus = (status) => {
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.clientId === status.clientId ? { ...user, status } : user,
-        ),
-      );
-    };
-
-    socket.on("user-status-update", handleStatus);
-
-    return () => {
-      socket.off("user-status-update", handleStatus);
-    };
-  }, []);
+  const { users } = useRoom();
   return (
     <div className="user-list flex-1 flex flex-col gap-[0.8rem] py-1">
       {users.map((user) => (

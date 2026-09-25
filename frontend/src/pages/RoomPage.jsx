@@ -12,7 +12,7 @@ import useClockSync from "@/hooks/room/useClockSync";
 import useReconnection from "@/hooks/room/useReconnection";
 import RoomInfo from "@/components/videoPlayer/RoomInfo";
 import { Separator } from "@/components/ui/separator";
-
+import useUpdateUsers from "@/hooks/room/useUpdateUsers";
 const RoomPage = () => {
   const [loadingStage, setLoadingStage] = useState("connecting");
 
@@ -33,6 +33,7 @@ const RoomPage = () => {
   const { leaveRoom } = useLeaveRoom();
   useUpdateMessage();
   useReconnection({ joinRoom, updateRoom, leaveRoom, setLoadingStage });
+  useUpdateUsers();
 
   return (
     <div className="flex flex-col h-screen">
