@@ -19,7 +19,9 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex items-center justify-between gap-5 h-8">
+    <div
+      className={`flex items-center ${isAdmin || playbackControl === "everyone" ? "justify-between" : "justify-end"} gap-5 h-8 bg-red-400`}
+    >
       {(isAdmin || playbackControl === "everyone") && <SearchInput />}
       <div className="flex gap-3 w-fit">
         <Tooltip>

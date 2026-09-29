@@ -13,8 +13,8 @@ const RoomInfo = () => {
   );
   const drift = Math.round((user?.status?.drift ?? 0) * 1000);
   return (
-    <div className="w-full h-[4%] flex items-center text-xs text-neutral-400 px-4 py-1">
-      <div className="h-full flex items-center gap-4">
+    <div className="w-full h-[4%] flex items-center text-[8px] lg:text-xs text-neutral-400 px-4 py-1">
+      <div className="h-full flex items-center gap-2 lg:gap-4">
         <p>ytsync</p>
         <p>RoomId : {roomId}</p>
         <p>{users.length} Viewers</p>
@@ -24,7 +24,12 @@ const RoomInfo = () => {
         <p>Drift : {drift}ms</p>
       </div>
       <div className="h-full flex-1 flex items-center justify-end gap-4">
-        <Link to="">
+        <Link
+          target="_blank"
+          rel="noopener noreferrer"
+          to="https://github.com/manish-850/ytsync"
+          className="flex items-center"
+        >
           <Github className="h-4 w-4 fill-neutral-400" />
         </Link>
       </div>
